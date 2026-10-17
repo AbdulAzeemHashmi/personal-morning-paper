@@ -2,99 +2,121 @@
 
 ## 1. System Overview
 
-**The Personal Morning Paper** is an intelligent publication system that transforms scattered, overwhelming web news into a finite, elegant daily broadsheet tailored to each reader's schedule, cognitive style, and passions.
+The Personal Morning Paper is a full-stack publication system that transforms scattered, overwhelming web news into a finite, elegant daily broadsheet tailored to each reader's schedule, cognitive style, and passions.
+
+It features an Express REST backend backed by an embedded SQLite database (WAL mode) for persistent relational storage, coupled with a React broadsheet interface, speech synthesis audio narration, and vector-grade PDF generation.
 
 ```mermaid
 flowchart TD
-    subgraph Data_Corpus [1. Global Knowledge & News Feeds]
-        RSS[Real-time News Feeds & Wire Services]
-        Outlets[Curated Editorial Publishers\nFT, MIT Tech Review, Nature, The Atlantic]
-        Meta[Perspective & Framing Annotations]
+    subgraph Data_Layer [1. Persistent SQLite Database & Feeds]
+        DB[(SQLite DB: morning_paper.db\nProfiles, Editions, Articles, Signals, Weights)]
+        HN[Hacker News / Public RSS Wire]
     end
 
-    subgraph Learning_Engine [2. Reader Intelligence & Adaptive Mind]
-        Profile[Reader Profile\nName, Time Budget, Tone, Beats]
-        Signals[Interaction Tracker\nSkips, Likes, Reads, Bookmarks]
-        Bayesian[Dynamic Weighting Model\nCategory & Tag Affinity]
-        Reranker[Relevance Scoring & Composer]
-        EditorSynthesis[AI Chief Editor Synthesis\nMorning Address & Meta-Themes]
+    subgraph Backend_API [2. Express REST Service : Port 3001]
+        ProfileAPI[/api/profile]
+        SignalsAPI[/api/signals/action]
+        AskPaperAPI[/api/ask-paper : Semantic Q&A]
+        LiveWireAPI[/api/news/live : Wire Dispatches]
     end
 
-    subgraph Presentation_Layer [3. Reading Surfaces]
-        BroadsheetWeb[Interactive Broadsheet Webpage\nResponsive Multi-Column, Fold Removal]
-        AudioDispatch[Morning Audio Dispatch\nSpeech Synthesis Narration]
-        PrintEngine[Print-Grade PDF Engine\nAuthentic Broadsheet Layout, jsPDF]
-        ArchiveEngine[Historical Editions Archive\nTime Machine & Edition Browser]
+    subgraph Learning_Engine [3. Adaptive Weighting Model]
+        Bayesian[Dynamic Weighting Model: Category & Tag Affinity]
+        Reranker[Relevance Scoring & Composer Engine]
+        EditorSynthesis[AI Chief Editor Synthesis: Morning Address]
     end
 
-    Data_Corpus --> Reranker
-    Profile --> Reranker
-    Signals --> Bayesian
-    Bayesian --> Profile
-    Reranker --> EditorSynthesis
-    EditorSynthesis --> BroadsheetWeb
-    EditorSynthesis --> AudioDispatch
-    EditorSynthesis --> PrintEngine
-    BroadsheetWeb -.->|Skips: -0.25 penalty\nLikes: +0.35 boost| Signals
-    BroadsheetWeb --> ArchiveEngine
+    subgraph Frontend_Surfaces [4. Broadsheet Reading Surfaces]
+        BroadsheetWeb[Interactive Broadsheet Webpage]
+        AskPaperUI[Ask The Paper Interactive Drawer]
+        SearchFilterUI[Real-Time Keyword & Beat Search]
+        AudioDispatch[Morning Audio Dispatch Narration]
+        PrintEngine[Print-Grade Broadsheet PDF Engine]
+        ArchiveEngine[Historical Editions Archive]
+    end
+
+    Data_Layer <--> Backend_API
+    Backend_API <--> Learning_Engine
+    Learning_Engine --> Frontend_Surfaces
+    Frontend_Surfaces -.->|Skips: -0.25 / Likes: +0.35| Backend_API
 ```
 
 ---
 
-## 2. Core Architectural Pillars
+## 2. Relational Database Schema (SQLite)
 
-### A. The Ingestion & Relevance Scoring Model
-Every candidate article $A_i$ receives a dynamic relevance score $S(A_i)$ computed at press time:
+The SQLite database (`morning_paper.db`) uses Write-Ahead Logging (WAL) mode for fast concurrent operations.
+
+### Tables:
+1. **`reader_profiles`**:
+   - `id` (TEXT PRIMARY KEY): Reader identifier (`default`).
+   - `name`, `location`, `newspaper_name`, `motto`: Custom masthead identity.
+   - `reading_time`: `5min`, `15min`, or `30min`.
+   - `tone`: `analytical`, `executive`, `curious`, or `provocative`.
+   - `topics_json`: JSON array of chosen beats.
+   - `keywords_json`: JSON array of custom reader keywords.
+   - `theme`: `broadsheet`, `midnight`, or `sepia`.
+   - `onboarding_completed`: Boolean flag.
+   - `updated_at`: Epoch timestamp.
+
+2. **`articles`**:
+   - `id` (TEXT PRIMARY KEY): Unique story identifier.
+   - `title`, `subhead`, `author`, `outlet`, `outlet_url`, `published_at`, `category`: Metadata.
+   - `tags_json`: Array of topic tags.
+   - `reading_minutes`: Estimated reading time.
+   - `lead_paragraph`, `full_body_json`, `pull_quote`: Story contents.
+   - `nuance_json`: Multi-perspective viewpoints.
+
+3. **`editions`**:
+   - `edition_id` (TEXT PRIMARY KEY): `edition-YYYY-MM-DD`.
+   - `date_str`, `short_date`, `volume`, `issue`: Publication stamps.
+   - `weather_json`, `morning_quote_json`, `chief_editor_note_json`, `coffee_break_json`: Daily fixtures.
+   - `lead_article_id`: Foreign key reference to the lead anchor story.
+
+4. **`learning_interactions`**:
+   - `id` (INTEGER PRIMARY KEY AUTOINCREMENT).
+   - `article_id`, `title`, `category`, `action` (`skip`, `read`, `like`, `bookmark`), `timestamp`.
+
+5. **`category_weights` & `keyword_weights`**:
+   - `category` / `keyword` (TEXT PRIMARY KEY).
+   - `weight` (REAL): Dynamically updated multiplier reflecting reader preference.
+
+---
+
+## 3. REST API Specifications
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | SQLite database connectivity check and table metrics |
+| `GET` | `/api/profile` | Retrieve reader identity and preference settings |
+| `POST` | `/api/profile` | Update reader masthead, reading budget, and beats |
+| `GET` | `/api/signals` | Fetch category weights, keyword scores, and interaction logs |
+| `POST` | `/api/signals/action` | Submit feedback (skip, like, read, bookmark) to update weights |
+| `POST` | `/api/ask-paper` | Semantic natural language Q&A across today's articles |
+| `GET` | `/api/news/live` | Retrieve live breaking news wire dispatches |
+
+---
+
+## 4. Relevance Scoring & Adaptive Feedback Formula
+
+Every candidate article $A_i$ receives a dynamic score $S(A_i)$ at press time:
 
 $$S(A_i) = \left( B_{cat} \times W_{cat} \right) + \sum_{k \in Tags} \left( M_k \times W_k \right) - P_{skip} + R_{novelty}$$
 
 Where:
 - $B_{cat}$: Base affinity from user's configured beats (1.4 if chosen, 0.6 if unchosen).
-- $W_{cat}$: Learned category weight (ranges from $0.20$ to $3.50$).
+- $W_{cat}$: Learned category weight from SQLite (ranges from $0.20$ to $3.50$).
 - $M_k$: Keyword match multiplier ($+0.80$ for user-defined tags).
-- $W_k$: Learned keyword affinity weight.
+- $W_k$: Learned keyword affinity weight from SQLite.
 - $P_{skip}$: Severe skip penalty ($-3.00$ if skipped recently, preventing unwanted repetition).
 - $R_{novelty}$: Time-decay factor ensuring fresh morning perspectives.
 
-The highest-scoring article is designated the **Front Page Anchor / Lead Story**, while subsequent articles populate the **Side Dispatches** and thematic broadsheet sections.
-
 ---
 
-### B. The Adaptive Feedback Loop ("The Editorial Mind")
-Traditional news feeds operate on mindless engagement loops (clicks, anger, doomscrolling). The Personal Morning Paper reverses this with deliberate, high-intent signals:
+## 5. Distinctive Features
 
-| Reader Action | Algorithmic Impact | Editorial Consequence |
-|---|---|---|
-| **Skip Article** | Category $-0.25$, Tags $-0.20$ | Instantly folds away story; deprioritizes topic in tomorrow's edition. |
-| **Read / Expand** | Category $+0.15$, Tags $+0.15$ | Signals intellectual resonance; balances future column depth. |
-| **Like / Star** | Category $+0.35$, Tags $+0.25$ | Strong reinforcement; elevates related themes to Front Page candidate. |
-| **Bookmark** | Saved to archive | Preserved for evening deep reading. |
-
-The **AI Mind Drawer** provides 100% transparency into this matrix, displaying real-time category affinity scores and a live signal audit log.
-
----
-
-### C. Multi-Modal Presentation Engines
-
-1. **Interactive Broadsheet Webpage**:
-   - Styled with authentic 19th/20th-century print typography (`Cinzel`, `Playfair Display`, `Merriweather`).
-   - Features classic double-rules, true drop caps, pull quotes, bylines, and issue numbers.
-   - Interactive article reader with full text, key takeaways, and outbound links to original publisher articles.
-   - Built-in theme switch: **Paper Broadsheet** (Cream ivory), **Midnight Edition** (Slate dark), and **Sepia Archive**.
-
-2. **Print-Grade PDF Engine**:
-   - Client-side vector rendering via `html2canvas` (2x DPI scale) and `jsPDF`.
-   - Authentic broadsheet proportions formatted for printing or offline reading on tablets/e-readers.
-
-3. **Morning Audio Dispatch**:
-   - Browser `SpeechSynthesis` audio narration engine.
-   - Reads weather, Chief Editor's morning note, lead headline, and summaries at adjustable speeds (1x, 1.25x, 1.5x).
-
----
-
-## 3. "Room to Explore" Distinctive Features
-
-1. **Chief Editor's Desk**: An AI-synthesized morning address that synthesizes disparate headlines into a unified civilizational or technological narrative.
-2. **The Nuance Lens**: A 3-way comparative perspective dial displaying distinct framing worldviews on contentious issues (e.g., Technological Optimism, Economic Realignment, Systemic Vulnerability).
-3. **The Coffee Break**: Daily intellectual riddle, Word of the Morning (with etymology), and historical newspaper trivia.
-4. **Time Machine Archive**: Allows readers to browse previous days' papers and track how their paper evolved.
+1. **Ask The Paper**: Real-time semantic assistant answering reader inquiries using today's SQLite broadsheet corpus.
+2. **Interactive Coffee Break**: Puzzle with real-time answer checking, validation feedback, and word of the day.
+3. **Single-Story & Full-Paper Audio**: Speech synthesis narration for the complete dispatch or individual stories.
+4. **Font Scaling**: Dynamic typographic zoom (A- / A+) for enhanced reading comfort.
+5. **Real-Time Live Wire**: Toggleable ticker fetching breaking global dispatches alongside the curated edition.
