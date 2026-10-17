@@ -1,6 +1,6 @@
 import React from 'react';
 import { PaperEdition, ReaderProfile, LearningSignals } from '../types';
-import { Download, Sliders, Brain, History, Moon, Sparkles, MessageSquare, Bot } from 'lucide-react';
+import { Download, Sliders, Brain, History, Moon, Sun, Sparkles, MessageSquare, Bot, Clock, CloudSun } from 'lucide-react';
 
 interface MastheadProps {
   edition: PaperEdition;
@@ -34,86 +34,90 @@ export const Masthead: React.FC<MastheadProps> = ({
   currentTheme
 }) => {
   return (
-    <header className="masthead-section">
-      {/* Top Meta Bar */}
-      <div className="top-meta-bar">
-        <div className="meta-group">
-          <span className="meta-item">
+    <header className="modern-masthead-wrapper">
+      {/* Sleek Floating Top Bar */}
+      <div className="modern-top-bar">
+        <div className="top-bar-left">
+          <div className="brand-emblem">M</div>
+          <span className="info-chip">
             <strong>{edition.dateStr}</strong>
           </span>
-          <span>•</span>
-          <span className="meta-item">
+          <span className="info-chip">
+            <CloudSun size={12} color="var(--accent-amber)" />
             {edition.weather.city} | {edition.weather.temp}, {edition.weather.condition}
+          </span>
+          <span className="info-chip">
+            <Clock size={12} />
+            {profile.readingTime.toUpperCase()} Reading Window
           </span>
         </div>
 
-        <div className="meta-group">
-          <span style={{ color: 'var(--accent-burgundy)', fontWeight: 700 }}>
-            PRICE: PRICELESS / FOR YOUR EYES ONLY
-          </span>
-          <span>•</span>
-          {/* Theme Switcher */}
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+        <div className="top-bar-right">
+          {/* Theme Selector */}
+          <div className="theme-pill-group">
             <button
-              title="Broadsheet Paper (Cream)"
-              className={`btn btn-sm ${currentTheme === 'broadsheet' ? 'btn-primary' : 'btn-outline'}`}
-              onClick={() => onThemeChange('broadsheet')}
-            >
-              Paper
-            </button>
-            <button
-              title="Midnight Edition (Dark)"
-              className={`btn btn-sm ${currentTheme === 'midnight' ? 'btn-primary' : 'btn-outline'}`}
+              className={`theme-pill-btn ${currentTheme === 'midnight' ? 'active' : ''}`}
               onClick={() => onThemeChange('midnight')}
+              title="Midnight Obsidian Theme"
             >
-              <Moon size={11} /> Night
+              <Moon size={11} style={{ display: 'inline', marginRight: '3px' }} /> Night
             </button>
             <button
-              title="Sepia Archive"
-              className={`btn btn-sm ${currentTheme === 'sepia' ? 'btn-primary' : 'btn-outline'}`}
+              className={`theme-pill-btn ${currentTheme === 'broadsheet' ? 'active' : ''}`}
+              onClick={() => onThemeChange('broadsheet')}
+              title="Clean Opal Theme"
+            >
+              <Sun size={11} style={{ display: 'inline', marginRight: '3px' }} /> Clean
+            </button>
+            <button
+              className={`theme-pill-btn ${currentTheme === 'sepia' ? 'active' : ''}`}
               onClick={() => onThemeChange('sepia')}
+              title="Artisanal Parchment Theme"
             >
               Sepia
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Main Ornate Masthead */}
-      <div className="masthead-container">
-        <div className="masthead-subtitle">The Sovereign Daily Digest</div>
-        <h1 className="masthead-title">
-          {profile.newspaperName || 'The Morning Chronicle'}
-        </h1>
-        <div className="masthead-motto">
-          "{profile.motto || 'Veritas, Gravitas et Lux'}"
-        </div>
-      </div>
-
-      {/* Issue Bar & Action Strip */}
-      <div className="issue-bar">
-        <div>
-          VOL. {edition.volume} | NO. {edition.issue}
-        </div>
-        <div>
-          READING TIME: {profile.readingTime.toUpperCase()} • TONE: {profile.tone.toUpperCase()}
-        </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             className="btn btn-sm btn-outline"
-            onClick={onOpenLearningMatrix}
-            title="Inspect how the AI adapts to your reading patterns"
+            onClick={onOpenSettings}
+            title="Configure personal preferences and beats"
           >
-            <Brain size={12} color="var(--accent-burgundy)" />
-            AI Mind ({signals.skipsCount} skips, {signals.likesCount} likes)
+            <Sliders size={12} /> Preferences
           </button>
 
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={onDownloadPDF}
+            disabled={isDownloadingPDF}
+            title="Export broadsheet as a crisp PDF"
+          >
+            <Download size={12} />
+            {isDownloadingPDF ? 'Generating...' : 'Export PDF'}
+          </button>
+        </div>
+      </div>
+
+      {/* Main Modern Masthead */}
+      <div className="modern-masthead">
+        <div className="masthead-edition-badge">
+          Vol. {edition.volume} | Issue {edition.issue} : Handcrafted Daily Digest
+        </div>
+        <h1 className="modern-masthead-title">
+          {profile.newspaperName || 'The Morning Chronicle'}
+        </h1>
+        <div className="modern-masthead-motto">
+          "{profile.motto || 'Veritas, Gravitas et Lux: An Intelligent Daily Broadsheet'}"
+        </div>
+
+        {/* Feature Action Ribbon */}
+        <div className="masthead-nav-ribbon">
           <button
             className="btn btn-sm btn-outline"
             onClick={onOpenAgentsRoom}
             title="Inspect autonomous multi-agent newsroom reasoning"
           >
-            <Bot size={12} color="var(--accent-burgundy)" /> Agents Room
+            <Bot size={13} color="var(--accent-amber)" /> Agents Room (4 Active)
           </button>
 
           <button
@@ -121,7 +125,16 @@ export const Masthead: React.FC<MastheadProps> = ({
             onClick={onOpenAskPaper}
             title="Ask questions about today's articles with AI synthesis"
           >
-            <MessageSquare size={12} color="var(--accent-blue)" /> Ask Paper
+            <MessageSquare size={13} color="var(--accent-cyan)" /> Ask The Paper
+          </button>
+
+          <button
+            className="btn btn-sm btn-outline"
+            onClick={onOpenLearningMatrix}
+            title="Inspect how the AI adapts to your reading patterns"
+          >
+            <Brain size={13} color="var(--accent-violet)" />
+            AI Mind Matrix ({signals.skipsCount} skips, {signals.likesCount} likes)
           </button>
 
           <button
@@ -129,7 +142,7 @@ export const Masthead: React.FC<MastheadProps> = ({
             onClick={onOpenArchive}
             title="Explore past daily editions"
           >
-            <History size={12} /> Past Editions
+            <History size={13} /> Historical Editions
           </button>
 
           <button
@@ -137,25 +150,7 @@ export const Masthead: React.FC<MastheadProps> = ({
             onClick={onOpenArchitecture}
             title="View system design diagram & hackathon submission specs"
           >
-            <Sparkles size={12} color="var(--accent-gold)" /> Architecture
-          </button>
-
-          <button
-            className="btn btn-sm btn-outline"
-            onClick={onOpenSettings}
-            title="Personalize preferences"
-          >
-            <Sliders size={12} /> Setup
-          </button>
-
-          <button
-            className="btn btn-sm btn-primary"
-            onClick={onDownloadPDF}
-            disabled={isDownloadingPDF}
-            title="Download this exact broadsheet edition as a high-resolution PDF"
-          >
-            <Download size={12} />
-            {isDownloadingPDF ? 'Printing PDF...' : 'Download PDF'}
+            <Sparkles size={13} color="var(--accent-amber)" /> Architecture & Specs
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Article } from '../types';
-import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Compass } from 'lucide-react';
+import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Sparkles, Clock, Compass } from 'lucide-react';
 
 interface LeadArticleProps {
   article: Article;
@@ -20,76 +20,76 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
   if (!article) return null;
 
   return (
-    <article className="lead-article">
-      <div className="lead-category">
-        Front Page Anchor • {article.category}
+    <article className="lead-article-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div className="category-tag-chip">
+          <Sparkles size={11} /> Cover Story | {article.category}
+        </div>
+        {article.relevanceScore && (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              backgroundColor: 'var(--bg-surface-elevated)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '12px',
+              fontSize: '11px',
+              fontWeight: 700,
+              color: 'var(--accent-amber)'
+            }}
+            title="Calculated relevance from your learning profile"
+          >
+            ★ {Math.round(article.relevanceScore * 10)}% Affinity
+          </span>
+        )}
       </div>
 
-      <h2 className="lead-title" onClick={() => onReadFull(article)}>
+      <h2 className="lead-title-modern" onClick={() => onReadFull(article)}>
         {article.title}
       </h2>
 
-      <div className="lead-subhead">
+      <div className="lead-subhead-modern">
         {article.subhead}
       </div>
 
-      <div className="byline-bar">
+      <div className="byline-bar-modern">
         <div>
-          By <span className="byline-author">{article.author}</span> • {article.outlet}
+          By <strong style={{ color: 'var(--text-primary)' }}>{article.author}</strong> | {article.outlet}
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span>{article.readingMinutes} min read</span>
-          {article.relevanceScore && (
-            <span
-              style={{
-                backgroundColor: 'var(--bg-subtle)',
-                padding: '2px 6px',
-                borderRadius: '3px',
-                fontSize: '10px',
-                fontWeight: 700,
-                color: 'var(--accent-burgundy)'
-              }}
-              title="Calculated relevance from your learning profile"
-            >
-              ★ {article.relevanceScore} Match
-            </span>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Clock size={12} /> {article.readingMinutes} min read
         </div>
       </div>
 
-      <div className="lead-body-columns">
-        <p className="drop-cap">
+      <div className="lead-body-modern">
+        <p style={{ marginBottom: '14px' }}>
           {article.leadParagraph}
         </p>
+
+        {article.pullQuote && (
+          <div className="pull-quote-modern">
+            "{article.pullQuote}"
+          </div>
+        )}
 
         {article.fullBody.slice(0, 1).map((paragraph, idx) => (
           <p key={idx} style={{ marginTop: '12px' }}>
             {paragraph}
           </p>
         ))}
-
-        {article.pullQuote && (
-          <div className="pull-quote">
-            "{article.pullQuote}"
-          </div>
-        )}
-
-        {article.fullBody.slice(1, 2).map((paragraph, idx) => (
-          <p key={idx} style={{ marginTop: '12px' }}>
-            {paragraph}
-          </p>
-        ))}
       </div>
 
-      {/* Action Strip */}
-      <div className="article-actions">
-        <div className="action-btns">
+      {/* Modern Action Strip */}
+      <div className="article-actions-modern">
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
             className="btn btn-sm btn-primary"
             onClick={() => onReadFull(article)}
             title="Open focus reader mode"
           >
-            <BookOpen size={12} /> Read Complete Story
+            <BookOpen size={13} /> Focus Reader
           </button>
 
           <a
@@ -99,12 +99,12 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
             className="btn btn-sm btn-outline"
             title="View original article at publisher"
           >
-            <ExternalLink size={12} /> Original Source
+            <ExternalLink size={12} /> Publisher Source
           </a>
         </div>
 
-        {/* Feedback / Learning Signals */}
-        <div className="action-btns">
+        {/* Feedback / Learning Actions */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button
             className={`btn btn-sm ${article.isLiked ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => onLike(article)}
@@ -116,7 +116,7 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
           <button
             className={`btn btn-sm ${article.isBookmarked ? 'btn-primary' : 'btn-outline'}`}
             onClick={() => onBookmark(article)}
-            title="Save for your evening archive"
+            title="Save for later"
           >
             <Bookmark size={12} /> {article.isBookmarked ? 'Saved' : 'Save'}
           </button>
@@ -125,7 +125,7 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
             className="btn btn-sm btn-outline"
             onClick={() => onSkip(article)}
             title="Not interested: removes story and trains AI to de-emphasize this topic"
-            style={{ color: 'var(--accent-burgundy)' }}
+            style={{ color: 'var(--accent-rose)' }}
           >
             <XCircle size={12} /> Skip
           </button>
