@@ -12,7 +12,7 @@ const STORAGE_KEYS = {
 export const DEFAULT_PROFILE: ReaderProfile = {
   name: 'Abdul Azeem',
   location: 'San Francisco, CA',
-  newspaperName: 'The Azeem Morning Chronicle',
+  newspaperName: 'Jimmy Morning Chronicle',
   motto: 'Veritas, Gravitas et Lux: An Intelligent Daily Broadsheet',
   readingTime: '15min',
   tone: 'analytical',
@@ -49,7 +49,14 @@ export function loadReaderProfile(): ReaderProfile {
   if (typeof window === 'undefined') return DEFAULT_PROFILE;
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.PROFILE);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.newspaperName === 'The Azeem Morning Chronicle') {
+        parsed.newspaperName = 'Jimmy Morning Chronicle';
+        saveReaderProfile(parsed);
+      }
+      return parsed;
+    }
   } catch (e) {
     console.warn('Failed to load profile from storage, using default', e);
   }

@@ -111,7 +111,7 @@ function seedInitialData() {
       'default',
       'Abdul Azeem',
       'San Francisco, CA',
-      'The Azeem Morning Chronicle',
+      'Jimmy Morning Chronicle',
       'Veritas, Gravitas et Lux: An Intelligent Daily Broadsheet',
       '15min',
       'analytical',

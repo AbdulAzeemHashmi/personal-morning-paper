@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.reader_profiles (
     user_id TEXT UNIQUE NOT NULL DEFAULT 'default_reader',
     name TEXT NOT NULL DEFAULT 'Abdul Azeem',
     location TEXT NOT NULL DEFAULT 'San Francisco, CA',
-    newspaper_name TEXT NOT NULL DEFAULT 'The Azeem Morning Chronicle',
+    newspaper_name TEXT NOT NULL DEFAULT 'Jimmy Morning Chronicle',
     motto TEXT NOT NULL DEFAULT 'Veritas, Gravitas et Lux: An Intelligent Daily Broadsheet',
     reading_time TEXT NOT NULL DEFAULT '15min' CHECK (reading_time IN ('5min', '15min', '30min')),
     tone TEXT NOT NULL DEFAULT 'analytical' CHECK (tone IN ('analytical', 'executive', 'curious', 'provocative')),

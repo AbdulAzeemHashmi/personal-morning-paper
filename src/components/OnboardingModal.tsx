@@ -125,7 +125,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   className="form-input"
                   value={profile.newspaperName}
                   onChange={e => setProfile({ ...profile, newspaperName: e.target.value })}
-                  placeholder="e.g. The Azeem Morning Chronicle"
+                  placeholder="e.g. Jimmy Morning Chronicle"
                 />
               </div>
 
