@@ -2,121 +2,134 @@
 
 ## 1. System Overview
 
-The Personal Morning Paper is a full-stack publication system that transforms scattered, overwhelming web news into a finite, elegant daily broadsheet tailored to each reader's schedule, cognitive style, and passions.
+The Personal Morning Paper is a full-stack publication system built on the **Next.js App Router**, powered by an autonomous **Multi-Agent Editorial Room** and backed by **Supabase PostgreSQL** for persistent multi-tenant storage.
 
-It features an Express REST backend backed by an embedded SQLite database (WAL mode) for persistent relational storage, coupled with a React broadsheet interface, speech synthesis audio narration, and vector-grade PDF generation.
+It bridges the tactile elegance of a traditional 19th-century broadsheet with modern multi-agent reasoning, semantic querying, speech synthesis audio, and vector-grade PDF generation.
 
 ```mermaid
 flowchart TD
-    subgraph Data_Layer [1. Persistent SQLite Database & Feeds]
-        DB[(SQLite DB: morning_paper.db\nProfiles, Editions, Articles, Signals, Weights)]
-        HN[Hacker News / Public RSS Wire]
+    subgraph Data_Layer [1. Persistence & Knowledge Feeds]
+        Supa[(Supabase PostgreSQL 15\nProfiles, Editions, Articles, Signals, Weights)]
+        Wire[Real-Time Hacker News / RSS Wire API]
     end
 
-    subgraph Backend_API [2. Express REST Service : Port 3001]
-        ProfileAPI[/api/profile]
-        SignalsAPI[/api/signals/action]
+    subgraph Multi_Agent_Room [2. Autonomous Multi-Agent Editorial Room]
+        Orchestrator[Newsroom Orchestrator : Central Dispatch]
+        Aura[Chief Editor Agent Aura-1 : Synthesis & Macro-Themes]
+        Nexus[Curator & Reranker Nexus-4 : Bayesian Reranker]
+        Vantage[Nuance & Perspective Vantage-2 : 3-Way Worldview Framing]
+        Minerva[Culture & Leisure Minerva-3 : Daily Dilemma & Etymology]
+    end
+
+    subgraph NextJS_API [3. Next.js App Router & Server Endpoints]
+        EditorialAPI[/api/agents/editorial : Run Agents Pipeline]
+        ProfileAPI[/api/profile : Supabase Sync]
+        SignalsAPI[/api/signals : Bayesian Weight Updates]
         AskPaperAPI[/api/ask-paper : Semantic Q&A]
         LiveWireAPI[/api/news/live : Wire Dispatches]
     end
 
-    subgraph Learning_Engine [3. Adaptive Weighting Model]
-        Bayesian[Dynamic Weighting Model: Category & Tag Affinity]
-        Reranker[Relevance Scoring & Composer Engine]
-        EditorSynthesis[AI Chief Editor Synthesis: Morning Address]
-    end
-
-    subgraph Frontend_Surfaces [4. Broadsheet Reading Surfaces]
-        BroadsheetWeb[Interactive Broadsheet Webpage]
-        AskPaperUI[Ask The Paper Interactive Drawer]
-        SearchFilterUI[Real-Time Keyword & Beat Search]
+    subgraph Reading_Surfaces [4. Broadsheet Reading Surfaces]
+        BroadsheetWeb[Next.js Interactive Broadsheet Webpage]
+        AgentsUI[Agents Room Live Trajectory Viewer]
+        AskPaperUI[Ask The Paper Semantic Assistant]
+        PrintEngine[Print-Grade Broadsheet PDF Generator]
         AudioDispatch[Morning Audio Dispatch Narration]
-        PrintEngine[Print-Grade Broadsheet PDF Engine]
-        ArchiveEngine[Historical Editions Archive]
+        ArchiveUI[Historical Editions Archive]
     end
 
-    Data_Layer <--> Backend_API
-    Backend_API <--> Learning_Engine
-    Learning_Engine --> Frontend_Surfaces
-    Frontend_Surfaces -.->|Skips: -0.25 / Likes: +0.35| Backend_API
+    Data_Layer <--> NextJS_API
+    NextJS_API <--> Multi_Agent_Room
+    Multi_Agent_Room --> Reading_Surfaces
+    Reading_Surfaces -.->|Feedback: Skip -0.25 / Like +0.35| NextJS_API
 ```
 
 ---
 
-## 2. Relational Database Schema (SQLite)
+## 2. Multi-Agent Editorial Room Architecture
 
-The SQLite database (`morning_paper.db`) uses Write-Ahead Logging (WAL) mode for fast concurrent operations.
+Rather than relying on a single monolithic prompt, four specialized autonomous agents collaborate on an editorial blackboard to assemble each morning edition:
+
+### A. Chief Editor Agent (Aura-1)
+- **Role**: Editorial Voice & Macro Synthesis.
+- **Responsibilities**:
+  - Reviews candidate headlines across the globe.
+  - Identifies the overarching civilizational or technological narrative of the day.
+  - Formulates the **Chief Editor Morning Address**, customized to the reader's name, time budget, and editorial disposition (analytical, executive, curious, contrarian).
+
+### B. Curator & Reranker Agent (Nexus-4)
+- **Role**: Quantitative Relevance & Broadsheet Layout Allocator.
+- **Responsibilities**:
+  - Evaluates candidate articles against reader baseline beats and learned weights.
+  - Computes the dynamic relevance score $S(A_i)$ using Bayesian feedback multipliers:
+    $$S(A_i) = \left( B_{cat} \times W_{cat} \right) + \sum_{k \in Tags} \left( M_k \times W_k \right) - P_{skip} + R_{novelty}$$
+  - Selects the **Front Page Anchor / Lead Story**, curates secondary side dispatches, and organizes thematic columns.
+
+### C. Perspective & Nuance Agent (Vantage-2)
+- **Role**: Investigative Balance & Bias Deconstruction.
+- **Responsibilities**:
+  - Scrutinizes polarizing or complex stories.
+  - Generates a **3-Way Perspective Dial** breaking down the story through distinct lenses (e.g. Technological Capability, Capital & Economic Velocity, and Systemic Vulnerability).
+
+### D. Culture & Leisure Agent (Minerva-3)
+- **Role**: Intellectual Wellness & Morning Reflection.
+- **Responsibilities**:
+  - Generates the daily **Coffee Break Dilemma** and validates interactive guesses.
+  - Selects the **Word of the Morning** with phonetic and etymological roots.
+  - Curates historical press trivia dating back to Fleet Street in 1702.
+
+---
+
+## 3. Database Architecture: Supabase PostgreSQL
+
+All data structures are defined in PostgreSQL 15+ (`supabase/migrations/20261017_init.sql`):
 
 ### Tables:
 1. **`reader_profiles`**:
-   - `id` (TEXT PRIMARY KEY): Reader identifier (`default`).
-   - `name`, `location`, `newspaper_name`, `motto`: Custom masthead identity.
+   - `id` (UUID PRIMARY KEY).
+   - `user_id` (TEXT UNIQUE): Reader identity.
+   - `name`, `location`, `newspaper_name`, `motto`: Masthead styling.
    - `reading_time`: `5min`, `15min`, or `30min`.
    - `tone`: `analytical`, `executive`, `curious`, or `provocative`.
-   - `topics_json`: JSON array of chosen beats.
-   - `keywords_json`: JSON array of custom reader keywords.
+   - `topics` (JSONB): Primary editorial beats.
+   - `keywords` (JSONB): Micro-topics and tags.
    - `theme`: `broadsheet`, `midnight`, or `sepia`.
    - `onboarding_completed`: Boolean flag.
-   - `updated_at`: Epoch timestamp.
 
 2. **`articles`**:
    - `id` (TEXT PRIMARY KEY): Unique story identifier.
    - `title`, `subhead`, `author`, `outlet`, `outlet_url`, `published_at`, `category`: Metadata.
-   - `tags_json`: Array of topic tags.
-   - `reading_minutes`: Estimated reading time.
-   - `lead_paragraph`, `full_body_json`, `pull_quote`: Story contents.
-   - `nuance_json`: Multi-perspective viewpoints.
+   - `tags` (JSONB), `reading_minutes`, `lead_paragraph`, `full_body` (JSONB), `pull_quote`: Story content.
+   - `nuance_perspectives` (JSONB): Multi-viewpoint breakdown.
 
 3. **`editions`**:
-   - `edition_id` (TEXT PRIMARY KEY): `edition-YYYY-MM-DD`.
-   - `date_str`, `short_date`, `volume`, `issue`: Publication stamps.
-   - `weather_json`, `morning_quote_json`, `chief_editor_note_json`, `coffee_break_json`: Daily fixtures.
-   - `lead_article_id`: Foreign key reference to the lead anchor story.
+   - `edition_id` (TEXT PRIMARY KEY): Date-stamped edition identifier.
+   - `volume`, `issue`, `weather` (JSONB), `morning_quote` (JSONB), `chief_editor_note` (JSONB), `coffee_break` (JSONB).
 
-4. **`learning_interactions`**:
-   - `id` (INTEGER PRIMARY KEY AUTOINCREMENT).
-   - `article_id`, `title`, `category`, `action` (`skip`, `read`, `like`, `bookmark`), `timestamp`.
+4. **`interaction_signals`**:
+   - `id` (BIGSERIAL PRIMARY KEY).
+   - `user_id`, `article_id`, `title`, `category`, `action` (`skip`, `read`, `like`, `bookmark`), `created_at`.
 
 5. **`category_weights` & `keyword_weights`**:
-   - `category` / `keyword` (TEXT PRIMARY KEY).
-   - `weight` (REAL): Dynamically updated multiplier reflecting reader preference.
+   - `user_id`, `category` / `keyword` (PRIMARY KEY).
+   - `weight` (NUMERIC): Dynamic affinity multiplier ($0.20$ to $3.50$).
 
 ---
 
-## 3. REST API Specifications
+## 4. Next.js Server Route Handlers
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | SQLite database connectivity check and table metrics |
-| `GET` | `/api/profile` | Retrieve reader identity and preference settings |
-| `POST` | `/api/profile` | Update reader masthead, reading budget, and beats |
-| `GET` | `/api/signals` | Fetch category weights, keyword scores, and interaction logs |
-| `POST` | `/api/signals/action` | Submit feedback (skip, like, read, bookmark) to update weights |
-| `POST` | `/api/ask-paper` | Semantic natural language Q&A across today's articles |
-| `GET` | `/api/news/live` | Retrieve live breaking news wire dispatches |
-
----
-
-## 4. Relevance Scoring & Adaptive Feedback Formula
-
-Every candidate article $A_i$ receives a dynamic score $S(A_i)$ at press time:
-
-$$S(A_i) = \left( B_{cat} \times W_{cat} \right) + \sum_{k \in Tags} \left( M_k \times W_k \right) - P_{skip} + R_{novelty}$$
-
-Where:
-- $B_{cat}$: Base affinity from user's configured beats (1.4 if chosen, 0.6 if unchosen).
-- $W_{cat}$: Learned category weight from SQLite (ranges from $0.20$ to $3.50$).
-- $M_k$: Keyword match multiplier ($+0.80$ for user-defined tags).
-- $W_k$: Learned keyword affinity weight from SQLite.
-- $P_{skip}$: Severe skip penalty ($-3.00$ if skipped recently, preventing unwanted repetition).
-- $R_{novelty}$: Time-decay factor ensuring fresh morning perspectives.
+- `POST /api/agents/editorial`: Triggers the Newsroom Orchestrator pipeline, returns assembled broadsheet and live agent logs.
+- `GET / POST /api/profile`: Reads and persists reader configuration to Supabase PostgreSQL.
+- `GET / POST /api/signals`: Retrieves affinity matrix and logs reader interactions.
+- `POST /api/ask-paper`: Semantic Q&A answering inquiries with citations from today's articles.
+- `GET /api/news/live`: Fetches real-time wire dispatches from Hacker News API.
 
 ---
 
 ## 5. Distinctive Features
 
-1. **Ask The Paper**: Real-time semantic assistant answering reader inquiries using today's SQLite broadsheet corpus.
-2. **Interactive Coffee Break**: Puzzle with real-time answer checking, validation feedback, and word of the day.
-3. **Single-Story & Full-Paper Audio**: Speech synthesis narration for the complete dispatch or individual stories.
-4. **Font Scaling**: Dynamic typographic zoom (A- / A+) for enhanced reading comfort.
-5. **Real-Time Live Wire**: Toggleable ticker fetching breaking global dispatches alongside the curated edition.
+1. **Multi-Agent Newsroom Inspector**: Live modal displaying agent reasoning and step-by-step assembly logs.
+2. **Ask The Paper**: Natural language assistant answering questions using today's broadsheet knowledge base.
+3. **Interactive Coffee Break**: Puzzle with real-time answer input, automated grading, celebratory confetti, and solution reveal.
+4. **Typographic & Audio Controls**: Font size scaling (A- / A+), full-paper and per-story speech synthesis narration, and quote sharing.
+5. **Print-Grade PDF Engine**: 1-click authentic broadsheet PDF export.
