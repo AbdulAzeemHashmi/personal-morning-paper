@@ -1,6 +1,6 @@
 import React from 'react';
 import { Article } from '../types';
-import { BookOpen, ThumbsUp, XCircle, Flame } from 'lucide-react';
+import { BookOpen, ThumbsUp, XCircle, Flame, Zap, TrendingUp, Cpu } from 'lucide-react';
 
 interface SideArticlesProps {
   articles: Article[];
@@ -73,6 +73,36 @@ export const SideArticles: React.FC<SideArticlesProps> = ({
           </div>
         );
       })}
+
+      {/* Morning Intelligence Wire Box to balance vertical column height */}
+      <div
+        className="side-wire-card"
+        style={{
+          background: 'var(--bg-surface-elevated)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-md)',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          marginTop: '4px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.2px', color: 'var(--accent-amber)' }}>
+          <Zap size={13} /> Morning Intelligence Wire
+        </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-secondary)' }}>
+            <TrendingUp size={14} style={{ color: 'var(--accent-teal)', flexShrink: 0, marginTop: '2px' }} />
+            <span><strong>Markets:</strong> Tech equities consolidate as AI infrastructure capex hits new quarterly records.</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-secondary)' }}>
+            <Cpu size={14} style={{ color: 'var(--accent-amber)', flexShrink: 0, marginTop: '2px' }} />
+            <span><strong>Frontier Models:</strong> Multimodal inference speedups open next-gen edge intelligence.</span>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 };

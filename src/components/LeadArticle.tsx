@@ -55,8 +55,10 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
       </div>
 
       <div className="byline-bar-modern">
-        <div>
-          By <strong style={{ color: 'var(--text-primary)' }}>{article.author}</strong> | {article.outlet}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span>Reporting by <strong style={{ color: 'var(--text-primary)' }}>{article.author}</strong></span>
+          <span style={{ color: 'var(--text-muted)' }}>•</span>
+          <span className="byline-outlet-badge">{article.outlet}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Clock size={12} /> {article.readingMinutes} min read

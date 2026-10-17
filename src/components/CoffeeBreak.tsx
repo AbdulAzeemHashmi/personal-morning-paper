@@ -60,7 +60,7 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
         </div>
 
         {/* Interactive Answer Input */}
-        <form onSubmit={handleCheckGuess} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+        <form onSubmit={handleCheckGuess} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
             type="text"
             className="form-input"
@@ -69,8 +69,8 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
               setUserGuess(e.target.value);
               setGuessFeedback(null);
             }}
-            placeholder="Type your guess here..."
-            style={{ maxWidth: '240px', padding: '6px 12px', fontSize: '12px' }}
+            placeholder="Type your answer guess..."
+            style={{ flex: '1 1 200px', minWidth: '180px', padding: '7px 14px', fontSize: '13px' }}
           />
           <button type="submit" className="btn btn-sm btn-primary">
             Check Answer

@@ -48,7 +48,7 @@ import { AskPaperDrawer } from '../components/AskPaperDrawer';
 import { SearchBar } from '../components/SearchBar';
 import { LiveWireBar } from '../components/LiveWireBar';
 import { AgentsRoomModal } from '../components/AgentsRoomModal';
-import { Database, Bot, Sparkles } from 'lucide-react';
+import { Database, Bot, Sparkles, ArrowUp } from 'lucide-react';
 
 export default function MorningPaperPage() {
   // Initialize with stable server-safe defaults to avoid SSR/client hydration mismatch.
@@ -258,7 +258,7 @@ export default function MorningPaperPage() {
   return (
     <div className="newspaper-wrapper">
       {/* Top Architecture & Connectivity Badges */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
+      <div className="system-status-ribbon">
         <span
           className="info-chip"
           title="Supabase PostgreSQL database connectivity status"
@@ -364,14 +364,102 @@ export default function MorningPaperPage() {
 
         {/* Modern Digital Publication Footer */}
         <footer className="modern-footer">
-          <div className="footer-quote-modern">
-            "{edition.morningQuote.quote}"
+          <div className="footer-inner-grid">
+            <div>
+              <div className="footer-quote-modern">
+                "{edition.morningQuote.quote}"
+              </div>
+              <div style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', color: 'var(--text-primary)', fontSize: '13px' }}>
+                — {edition.morningQuote.author}
+              </div>
+              <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                Synthesized by the Gemini AI Autonomous Newsroom for {profile.name}. Curated to eliminate feed exhaustion and restore deep morning focus.
+              </p>
+            </div>
+
+            <div>
+              <div className="footer-col-title">Broadsheet Sections</div>
+              <ul className="footer-link-list">
+                {edition.sections.map(sec => (
+                  <li key={sec.category}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(sec.category);
+                        window.scrollTo({ top: 400, behavior: 'smooth' });
+                      }}
+                    >
+                      {sec.category.charAt(0).toUpperCase() + sec.category.slice(1)} ({sec.articles.length})
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button type="button" onClick={() => setSelectedCategory('ALL')}>
+                    All Dispatches
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <div className="footer-col-title">Intelligence Console</div>
+              <ul className="footer-link-list">
+                <li>
+                  <button type="button" onClick={() => setIsAskPaperOpen(true)}>
+                    Ask Paper AI Q&A
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => setIsAgentsRoomOpen(true)}>
+                    Live Newsroom Telemetry
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => setIsLearningMatrixOpen(true)}>
+                    Curator Learning Matrix
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => setIsArchiveOpen(true)}>
+                    Morning Editions Archive
+                  </button>
+                </li>
+                <li>
+                  <button type="button" onClick={() => setIsArchitectureOpen(true)}>
+                    System Architecture
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '6px', color: 'var(--text-primary)' }}>
-            {edition.morningQuote.author}
-          </div>
-          <div style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
-            The Personal Morning Paper | Handcrafted daily for {profile.name} | End of Today's Intelligence Briefing
+
+          <div className="footer-bottom-bar">
+            <div>
+              <strong>Jimmy Morning Chronicle</strong> &bull; Vol. 2026 &bull; Handcrafted Daily Intelligence
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <span>Engineered with Next.js 15, Gemini Flash & Supabase</span>
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'var(--bg-surface-elevated)',
+                  border: '1px solid var(--border-medium)',
+                  borderRadius: '20px',
+                  padding: '4px 12px',
+                  fontSize: '11.5px',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer'
+                }}
+              >
+                <ArrowUp size={13} />
+                Back to Top
+              </button>
+            </div>
           </div>
         </footer>
       </main>
