@@ -74,7 +74,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Newspaper size={20} color="var(--accent-burgundy)" />
             <span style={{ fontFamily: 'var(--font-masthead)', fontWeight: 700, fontSize: '1.1rem' }}>
-              The Morning Chronicle — Printing Press Setup
+              The Morning Chronicle: Printing Press Setup
             </span>
           </div>
           {onClose && profile.onboardingCompleted && (
@@ -336,7 +336,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
               <div className="wizard-preview-masthead">
                 <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--accent-burgundy)', fontWeight: 700 }}>
-                  Vol. I — Daily Morning Edition
+                  Vol. I: Daily Morning Edition
                 </div>
                 <div style={{ fontFamily: 'var(--font-masthead)', fontSize: '2rem', fontWeight: 900, textTransform: 'uppercase', margin: '6px 0' }}>
                   {profile.newspaperName || 'The Morning Chronicle'}

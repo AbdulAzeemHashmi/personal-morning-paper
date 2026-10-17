@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CoffeeBreakItem } from '../types';
-import { Coffee, HelpCircle, Eye, EyeOff, BookMarked, History } from 'lucide-react';
+import { Coffee, Eye, EyeOff, BookMarked, History, CheckCircle, HelpCircle } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface CoffeeBreakProps {
   coffeeBreak: CoffeeBreakItem;
@@ -8,6 +9,29 @@ interface CoffeeBreakProps {
 
 export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
+  const [userGuess, setUserGuess] = useState<string>('');
+  const [guessFeedback, setGuessFeedback] = useState<'correct' | 'incorrect' | null>(null);
+
+  const handleCheckGuess = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userGuess.trim()) return;
+
+    const normalizedGuess = userGuess.toLowerCase().trim();
+    const solutionKeywords = ['agent', 'ai', 'algorithm', 'swarm', 'artificial intelligence', 'autonomous', 'model'];
+
+    const isMatch = solutionKeywords.some(kw => normalizedGuess.includes(kw));
+
+    if (isMatch) {
+      setGuessFeedback('correct');
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.8 }
+      });
+    } else {
+      setGuessFeedback('incorrect');
+    }
+  };
 
   return (
     <div className="coffee-break-container">
@@ -15,31 +39,62 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
       <div className="coffee-riddle-box">
         <div className="coffee-header">
           <Coffee size={18} color="var(--accent-burgundy)" />
-          The Coffee Break • Daily Dilemma
+          The Coffee Break : Daily Dilemma
         </div>
 
         <p className="riddle-text">
           "{coffeeBreak.riddle}"
         </p>
 
-        <div style={{ fontSize: '11px', color: 'var(--ink-muted)', marginBottom: '10px' }}>
+        <div style={{ fontSize: '11px', color: 'var(--ink-muted)', marginBottom: '12px' }}>
           <strong>Clue:</strong> {coffeeBreak.clue}
         </div>
 
-        <button
-          className="answer-toggle-btn"
-          onClick={() => setShowAnswer(!showAnswer)}
-        >
-          {showAnswer ? (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <EyeOff size={11} /> Hide Solution
-            </span>
-          ) : (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <Eye size={11} /> Reveal Solution
-            </span>
-          )}
-        </button>
+        {/* Interactive Answer Input */}
+        <form onSubmit={handleCheckGuess} style={{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            className="form-input"
+            value={userGuess}
+            onChange={e => {
+              setUserGuess(e.target.value);
+              setGuessFeedback(null);
+            }}
+            placeholder="Type your guess here..."
+            style={{ maxWidth: '240px', padding: '6px 10px', fontSize: '12px' }}
+          />
+          <button type="submit" className="btn btn-sm btn-primary">
+            Check Answer
+          </button>
+
+          <button
+            type="button"
+            className="answer-toggle-btn"
+            onClick={() => setShowAnswer(!showAnswer)}
+          >
+            {showAnswer ? (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <EyeOff size={11} /> Hide Solution
+              </span>
+            ) : (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Eye size={11} /> Reveal
+              </span>
+            )}
+          </button>
+        </form>
+
+        {guessFeedback === 'correct' && (
+          <div style={{ backgroundColor: '#e6f4ea', color: '#137333', padding: '6px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+            <CheckCircle size={14} /> Brilliant! Your answer is spot on!
+          </div>
+        )}
+
+        {guessFeedback === 'incorrect' && (
+          <div style={{ backgroundColor: '#fce8e6', color: '#c5221f', padding: '6px 10px', borderRadius: '4px', fontSize: '12px', marginBottom: '8px' }}>
+            Not quite. Take another look at today's front-page technology lead!
+          </div>
+        )}
 
         {showAnswer && (
           <div className="answer-reveal">

@@ -12,7 +12,7 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Technology & AI',
     tags: ['Agentic AI', 'LLMs', 'Future of Work', 'Automation', 'Autonomous Systems'],
     readingMinutes: 4,
-    leadParagraph: 'A profound structural transformation is quietly taking hold across modern software laboratories and cognitive industries. Autonomous multi-agent swarms—once confined to experimental whitepapers—are now actively orchestrating complex scientific pipelines, refactoring enterprise architectures, and authoring rigorous empirical literature without direct human micro-management.',
+    leadParagraph: 'A profound structural transformation is quietly taking hold across modern software laboratories and cognitive industries. Autonomous multi-agent swarms - once confined to experimental whitepapers - are now actively orchestrating complex scientific pipelines, refactoring enterprise architectures, and authoring rigorous empirical literature without direct human micro-management.',
     fullBody: [
       'The turning point arrived not with larger parameter counts, but with adaptive feedback topology. By combining persistent state graphs, deterministic tool verification, and asynchronous self-correction loops, contemporary autonomous agents bypass the hallucinations that plagued earlier conversational generative systems.',
       'In economic terms, the friction between ideation and functional execution is collapsing towards zero. A single engineer today oversees an ensemble of specialized subagents: one verifying formal type proofs, another stress-testing edge scenarios, and a third synthesizing documentation.',
@@ -68,10 +68,10 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Culture & Ideas',
     tags: ['Neuroscience', 'Focus', 'Digital Minimalism', 'Mindfulness', 'Deep Work'],
     readingMinutes: 3,
-    leadParagraph: 'In an attention economy engineered to reward twitch reflexes and continuous partial awareness, sustained cognitive immersion has ceased to be merely an intellectual habit—it has become the rarest biological luxury of modern civilization.',
+    leadParagraph: 'In an attention economy engineered to reward twitch reflexes and continuous partial awareness, sustained cognitive immersion has ceased to be merely an intellectual habit - it has become the rarest biological luxury of modern civilization.',
     fullBody: [
       'Recent functional neuroimaging investigations reveal that rapid context switching across endless short-form feeds induces chronic micro-spikes of cortisol while down-regulating deep prefrontal dendritic connectivity.',
-      'Conversely, engaging with structured, bounded morning publications—where content has a definitive start and conclusion—catalyzes alpha-band neural coherence and enhances episodic memory consolidation.',
+      'Conversely, engaging with structured, bounded morning publications - where content has a definitive start and conclusion - catalyzes alpha-band neural coherence and enhances episodic memory consolidation.',
       'The modern ritual of the "morning paper," whether ink or minimalist broadsheet typography, provides a psychological fortress against the ceaseless assault of ephemeral algorithmic stimulation.'
     ],
     pullQuote: 'A publication with a definitive end restores the human mind. The infinite scroll was an evolutionary mistake; the morning broadsheet is its antidote.'
@@ -171,8 +171,8 @@ export const INITIAL_ARTICLES: Article[] = [
 export const MOCK_CHIEF_EDITOR_NOTE: ChiefEditorNote = {
   headline: 'The Dawn of Deliberate Speed: On Agency, Energy, and Focus',
   keyTheme: 'Technological acceleration colliding with human cognitive restoration',
-  narrative: 'Good morning. Across today\'s dispatches, an unexpected convergence emerges. While autonomous synthetic agents shatter historic bottlenecks in engineering and research, human society is rediscovering an acute hunger for boundary and quietude. Simultaneously, the physical bedrock of civilization—our energy grids, silicon supply lines, and cellular biology—is transitioning from fragile extraction to deterministic technology curves. Today\'s morning paper is curated to sharpen your perspective at the intersection of these tectonic forces.',
-  signoff: 'From the Editor\'s Desk — Veritas, Gravitas et Lux.'
+  narrative: 'Good morning. Across today\'s dispatches, an unexpected convergence emerges. While autonomous synthetic agents shatter historic bottlenecks in engineering and research, human society is rediscovering an acute hunger for boundary and quietude. Simultaneously, the physical bedrock of civilization: our energy grids, silicon supply lines, and cellular biology, is transitioning from fragile extraction to deterministic technology curves. Today\'s morning paper is curated to sharpen your perspective at the intersection of these tectonic forces.',
+  signoff: 'From the Editor\'s Desk: Veritas, Gravitas et Lux.'
 };
 
 export const MOCK_COFFEE_BREAK: CoffeeBreakItem = {

@@ -13,7 +13,7 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
       <div style={{ textAlign: 'center', borderBottom: '2px solid #222', paddingBottom: '12px', marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', borderBottom: '1px solid #222', paddingBottom: '6px', marginBottom: '8px' }}>
           <span>{edition.dateStr}</span>
-          <span>{edition.weather.city} — {edition.weather.temp}, {edition.weather.condition}</span>
+          <span>{edition.weather.city} | {edition.weather.temp}, {edition.weather.condition}</span>
           <span>PRICE: PRICELESS / FOR YOUR EYES ONLY</span>
         </div>
 
@@ -28,7 +28,7 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', borderTop: '1px solid #222', borderBottom: '2px solid #222', padding: '6px 0', marginTop: '10px' }}>
-          <span>VOL. {edition.volume} — NO. {edition.issue}</span>
+          <span>VOL. {edition.volume} | NO. {edition.issue}</span>
           <span>CURATED FOR: {profile.name.toUpperCase()}</span>
           <span>ROUTINE: {profile.readingTime.toUpperCase()} • TONE: {profile.tone.toUpperCase()}</span>
         </div>
@@ -167,7 +167,7 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
 
       {/* Newspaper Print Footer */}
       <div style={{ textAlign: 'center', marginTop: '20px', borderTop: '2px solid #222', paddingTop: '10px', fontSize: '11px', color: '#666' }}>
-        <div>"{edition.morningQuote.quote}" — {edition.morningQuote.author}</div>
+        <div>"{edition.morningQuote.quote}" - {edition.morningQuote.author}</div>
         <div style={{ marginTop: '4px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '9.5px' }}>
           Personal Morning Paper • Handcrafted for {profile.name} • End of Edition
         </div>

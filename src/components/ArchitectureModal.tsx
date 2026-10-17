@@ -27,7 +27,7 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
           {/* Top Banner */}
           <div style={{ backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--rule-light)', padding: '16px 20px', borderRadius: 'var(--radius-sm)', marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '13px', color: 'var(--accent-burgundy)', marginBottom: '6px' }}>
-              <Sparkles size={16} /> The Personal Morning Paper — Engineering Overview
+              <Sparkles size={16} /> The Personal Morning Paper: Engineering Overview
             </div>
             <p style={{ fontSize: '13px', color: 'var(--ink-secondary)', lineHeight: 1.55 }}>
               A deterministic, privacy-first, zero-hallucination architecture combining authentic 19th-century broadsheet aesthetics with adaptive reinforcement algorithms, web speech synthesis, and vector-grade PDF rendering.

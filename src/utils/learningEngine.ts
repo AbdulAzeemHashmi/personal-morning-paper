@@ -13,7 +13,7 @@ export const DEFAULT_PROFILE: ReaderProfile = {
   name: 'Abdul Azeem',
   location: 'San Francisco, CA',
   newspaperName: 'The Azeem Morning Chronicle',
-  motto: 'Veritas, Gravitas et Lux — An Intelligent Daily Broadsheet',
+  motto: 'Veritas, Gravitas et Lux: An Intelligent Daily Broadsheet',
   readingTime: '15min',
   tone: 'analytical',
   topics: ['Technology & AI', 'Markets & Finance', 'Science & Cosmos', 'Culture & Ideas'],

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Article } from '../types';
 import { NuanceLens } from './NuanceLens';
-import { ExternalLink, ThumbsUp, XCircle, Bookmark, X, Clock, Newspaper } from 'lucide-react';
+import { ExternalLink, ThumbsUp, XCircle, Bookmark, X, Clock, Newspaper, Volume2, Square, Share2, Check } from 'lucide-react';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -20,25 +20,111 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   onBookmark,
   onArticleRead
 }) => {
+  const [fontSize, setFontSize] = useState<number>(16);
+  const [isNarrating, setIsNarrating] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+
   useEffect(() => {
     if (article) {
-      // Record read interaction
       onArticleRead(article);
     }
+    return () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, [article?.id]);
 
   if (!article) return null;
+
+  const handleToggleNarration = () => {
+    if (!('speechSynthesis' in window)) {
+      alert('Speech synthesis is not supported on this device.');
+      return;
+    }
+
+    if (isNarrating) {
+      window.speechSynthesis.cancel();
+      setIsNarrating(false);
+    } else {
+      window.speechSynthesis.cancel();
+      const textToRead = `${article.title}. By ${article.author} for ${article.outlet}. ${article.leadParagraph}. ${article.fullBody.join(' ')}`;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.rate = 1.0;
+      utterance.onend = () => setIsNarrating(false);
+      utterance.onerror = () => setIsNarrating(false);
+      window.speechSynthesis.speak(utterance);
+      setIsNarrating(true);
+    }
+  };
+
+  const handleShare = () => {
+    const shareText = `"${article.title}" via The Morning Chronicle: ${article.outletUrl}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-dialog" onClick={e => e.stopPropagation()} style={{ maxWidth: '860px' }}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontFamily: 'var(--font-ui)', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--accent-burgundy)', fontWeight: 700 }}>
-            <Newspaper size={14} /> {article.category} • {article.outlet}
+            <Newspaper size={14} /> {article.category} | {article.outlet}
           </div>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={18} />
-          </button>
+
+          {/* Reading Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Font size scaling */}
+            <div style={{ display: 'flex', border: '1px solid var(--rule-light)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setFontSize(Math.max(14, fontSize - 2))}
+                title="Decrease font size"
+                style={{ border: 'none', padding: '2px 8px', fontSize: '11px' }}
+              >
+                A-
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm"
+                onClick={() => setFontSize(Math.min(22, fontSize + 2))}
+                title="Increase font size"
+                style={{ border: 'none', padding: '2px 8px', fontSize: '11px', borderLeft: '1px solid var(--rule-light)' }}
+              >
+                A+
+              </button>
+            </div>
+
+            {/* Read aloud single story */}
+            <button
+              type="button"
+              className={`btn btn-sm ${isNarrating ? 'btn-primary' : 'btn-outline'}`}
+              onClick={handleToggleNarration}
+              title={isNarrating ? 'Stop story narration' : 'Listen to this story'}
+            >
+              {isNarrating ? <Square size={11} /> : <Volume2 size={11} />}
+              {isNarrating ? 'Stop Audio' : 'Listen'}
+            </button>
+
+            {/* Copy quote / share */}
+            <button
+              type="button"
+              className="btn btn-sm btn-outline"
+              onClick={handleShare}
+              title="Copy quote and share"
+            >
+              {copied ? <Check size={11} color="var(--accent-forest)" /> : <Share2 size={11} />}
+              {copied ? 'Copied!' : 'Share'}
+            </button>
+
+            <button className="modal-close-btn" onClick={onClose}>
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         <div className="modal-body">
@@ -52,14 +138,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--ink-muted)', marginBottom: '20px', fontFamily: 'var(--font-ui)', flexWrap: 'wrap', gap: '8px' }}>
             <div>
-              By <strong>{article.author}</strong> • Published via {article.outlet}
+              By <strong>{article.author}</strong> | Published via {article.outlet}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={12} /> {article.readingMinutes} min read
             </div>
           </div>
 
-          <div style={{ fontSize: '15.5px', lineHeight: 1.8, color: 'var(--ink-primary)' }}>
+          <div style={{ fontSize: `${fontSize}px`, lineHeight: 1.8, color: 'var(--ink-primary)' }}>
             <p className="drop-cap" style={{ marginBottom: '16px' }}>
               {article.leadParagraph}
             </p>
@@ -99,7 +185,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
                 onClick={() => onLike(article)}
                 title="Like story"
               >
-                <ThumbsUp size={14} /> {article.isLiked ? 'Liked' : 'Like & Reinforce'}
+                <ThumbsUp size={14} /> {article.isLiked ? 'Liked' : 'Like and Reinforce'}
               </button>
 
               <button
@@ -119,7 +205,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
                 style={{ color: 'var(--accent-burgundy)' }}
                 title="Skip story"
               >
-                <XCircle size={14} /> Skip & Demote Topic
+                <XCircle size={14} /> Skip and Demote Topic
               </button>
             </div>
           </div>

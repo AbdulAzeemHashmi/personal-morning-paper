@@ -1,6 +1,6 @@
 import React from 'react';
 import { PaperEdition, ReaderProfile, LearningSignals } from '../types';
-import { Download, Sliders, Brain, History, Sun, Moon, Coffee, Sparkles, BookOpen } from 'lucide-react';
+import { Download, Sliders, Brain, History, Moon, Sparkles, MessageSquare } from 'lucide-react';
 
 interface MastheadProps {
   edition: PaperEdition;
@@ -10,6 +10,7 @@ interface MastheadProps {
   onOpenArchive: () => void;
   onOpenArchitecture: () => void;
   onOpenSettings: () => void;
+  onOpenAskPaper: () => void;
   onDownloadPDF: () => void;
   isDownloadingPDF: boolean;
   onThemeChange: (theme: 'broadsheet' | 'midnight' | 'sepia') => void;
@@ -24,6 +25,7 @@ export const Masthead: React.FC<MastheadProps> = ({
   onOpenArchive,
   onOpenArchitecture,
   onOpenSettings,
+  onOpenAskPaper,
   onDownloadPDF,
   isDownloadingPDF,
   onThemeChange,
@@ -39,7 +41,7 @@ export const Masthead: React.FC<MastheadProps> = ({
           </span>
           <span>•</span>
           <span className="meta-item">
-            {edition.weather.city} — {edition.weather.temp}, {edition.weather.condition}
+            {edition.weather.city} | {edition.weather.temp}, {edition.weather.condition}
           </span>
         </div>
 
@@ -89,7 +91,7 @@ export const Masthead: React.FC<MastheadProps> = ({
       {/* Issue Bar & Action Strip */}
       <div className="issue-bar">
         <div>
-          VOL. {edition.volume} — NO. {edition.issue}
+          VOL. {edition.volume} | NO. {edition.issue}
         </div>
         <div>
           READING TIME: {profile.readingTime.toUpperCase()} • TONE: {profile.tone.toUpperCase()}
@@ -102,6 +104,14 @@ export const Masthead: React.FC<MastheadProps> = ({
           >
             <Brain size={12} color="var(--accent-burgundy)" />
             AI Mind ({signals.skipsCount} skips, {signals.likesCount} likes)
+          </button>
+
+          <button
+            className="btn btn-sm btn-outline"
+            onClick={onOpenAskPaper}
+            title="Ask questions about today's articles with AI synthesis"
+          >
+            <MessageSquare size={12} color="var(--accent-blue)" /> Ask Paper
           </button>
 
           <button
