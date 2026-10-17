@@ -191,3 +191,32 @@ WCAG AA/AAA compliance is enforced across all three themes on text-muted, text-s
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY`
+
+---
+
+## 9. 4-Stage Pipeline Reference
+
+The application processes each morning edition through four sequential stages:
+
+| Stage | Name | Inputs | Outputs |
+|---|---|---|---|
+| 1 | Knowledge Feeds | Global Wire & RSS, Multi-beat Outlets, Perspective Metadata | Raw candidate articles |
+| 2 | Editorial Engine | Candidate articles + Reader profile + Learned weights | Ranked, curated broadsheet edition |
+| 3 | Broadsheet UX | Curated edition data | Interactive webpage, Morning Audio Dispatch, High-Res PDF |
+| 4 | Feedback Loop | Reader actions (skip, read, like, bookmark) | Updated Bayesian weight matrix |
+
+> Continuous Reinforcement: Reader signals immediately update the local Bayesian weight matrix, recalibrating the next morning's lead story and column priorities.
+
+---
+
+## 10. Product Walkthrough Guide
+
+Recommended demonstration flow for a 5-minute product walkthrough:
+
+| Timestamp | Topic | What to Cover |
+|---|---|---|
+| 0:00 - 1:00 | Problem & Onboarding | Explain information scatter problem; walk through the Onboarding printing press setup modal (name, topics, tone, reading time) |
+| 1:00 - 2:30 | Digital Broadsheet Experience | Show Masthead, Lead story with byline badges, Morning Audio Dispatch, multi-column section layout, and theme switcher |
+| 2:30 - 3:30 | Adaptive Learning Demo | Skip an article (show -0.25 weight penalty), Like a story (+0.35 boost), open the Learning Matrix Drawer to visualize weight shifts, run Simulate Next Morning |
+| 3:30 - 4:15 | Room to Explore Features | Chief Editor AI Morning Address, Nuance Lens 3-way dial, Coffee Break dilemma, Historical Editions Archive |
+| 4:15 - 5:00 | PDF & Architecture | Trigger 1-click Broadsheet PDF generation; open About modal to show tech stack; point to ARCHITECTURE.md on GitHub |
