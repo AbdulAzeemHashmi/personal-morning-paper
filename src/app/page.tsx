@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Article, ReaderProfile, LearningSignals, PaperEdition } from '../types';
@@ -18,7 +18,8 @@ import {
   registerBookmark,
   generatePersonalEdition,
   ensureInitialArchiveEditions,
-  DEFAULT_SIGNALS
+  DEFAULT_SIGNALS,
+  DEFAULT_PROFILE
 } from '../utils/learningEngine';
 import { generateNewspaperPDF } from '../utils/pdfGenerator';
 import {
@@ -51,10 +52,13 @@ import { AgentsRoomModal } from '../components/AgentsRoomModal';
 import { Database, Bot, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function MorningPaperPage() {
-  const [profile, setProfile] = useState<ReaderProfile>(loadReaderProfile);
-  const [signals, setSignals] = useState<LearningSignals>(loadLearningSignals);
-  const [edition, setEdition] = useState<PaperEdition>(loadCurrentEdition);
-  const [editionsHistory, setEditionsHistory] = useState<PaperEdition[]>(loadEditionsHistory);
+  // Initialize with stable server-safe defaults to avoid SSR/client hydration mismatch.
+  // The real localStorage values are loaded in the useEffect below (client-only).
+  const [profile, setProfile] = useState<ReaderProfile>(DEFAULT_PROFILE);
+  const [signals, setSignals] = useState<LearningSignals>(DEFAULT_SIGNALS);
+  const [edition, setEdition] = useState<PaperEdition>(() => generatePersonalEdition(DEFAULT_PROFILE, DEFAULT_SIGNALS, 0));
+  const [editionsHistory, setEditionsHistory] = useState<PaperEdition[]>([]);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
   const [agentLogs, setAgentLogs] = useState<AgentLog[]>([]);
   const [isProcessingAgents, setIsProcessingAgents] = useState<boolean>(false);
 
@@ -77,8 +81,24 @@ export default function MorningPaperPage() {
     document.documentElement.setAttribute('data-theme', profile.theme || 'broadsheet');
   }, [profile.theme]);
 
-  // Initial Assembly via Multi-Agent Newsroom
+  // Hydrate from localStorage after mount (client-only).
+  // This runs once and overwrites the server-safe defaults with real persisted values,
+  // avoiding any SSR vs client HTML mismatch.
   useEffect(() => {
+    const savedProfile = loadReaderProfile();
+    const savedSignals = loadLearningSignals();
+    const savedEdition = loadCurrentEdition();
+    const savedHistory = loadEditionsHistory();
+    setProfile(savedProfile);
+    setSignals(savedSignals);
+    setEdition(savedEdition);
+    setEditionsHistory(savedHistory);
+    setIsHydrated(true);
+  }, []);
+
+  // Initial Assembly via Multi-Agent Newsroom (runs after hydration so it has real profile/signals).
+  useEffect(() => {
+    if (!isHydrated) return;
     runAutonomousEditorialAssembly(profile, signals, 0);
     ensureInitialArchiveEditions();
     setEditionsHistory(loadEditionsHistory());
@@ -100,7 +120,7 @@ export default function MorningPaperPage() {
         });
       }
     });
-  }, []);
+  }, [isHydrated]);
 
   const runAutonomousEditorialAssembly = async (p: ReaderProfile, s: LearningSignals, offset: number) => {
     setIsProcessingAgents(true);
@@ -387,3 +407,5 @@ export default function MorningPaperPage() {
     </div>
   );
 }
+
+
