@@ -1,6 +1,6 @@
 import React from 'react';
 import { Article } from '../types';
-import { ExternalLink, BookOpen, ThumbsUp, XCircle, Tag } from 'lucide-react';
+import { BookOpen, ThumbsUp, XCircle, Layers } from 'lucide-react';
 
 interface SectionArticlesProps {
   sections: { category: string; articles: Article[] }[];
@@ -18,43 +18,47 @@ export const SectionArticles: React.FC<SectionArticlesProps> = ({
   return (
     <div className="sections-container">
       {sections.map(section => {
-        // filter out completely skipped items
         const visibleArticles = section.articles.filter(a => !a.isSkipped);
         if (visibleArticles.length === 0) return null;
 
         return (
-          <section key={section.category} className="section-block">
-            <div className="section-header">
-              <span className="section-header-title">{section.category}</span>
-              <div className="section-header-line" />
+          <section key={section.category} className="section-block-modern">
+            <div className="section-header-modern">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Layers size={16} color="var(--accent-amber)" />
+                <span className="section-title-modern">{section.category}</span>
+              </div>
+              <div className="section-line-modern" />
             </div>
 
-            <div className="section-grid">
+            <div className="section-grid-modern">
               {visibleArticles.map(article => (
-                <article key={article.id} className="article-card">
-                  <div className="article-card-header">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--ink-muted)', marginBottom: '4px' }}>
-                      <span>{article.outlet}</span>
+                <article key={article.id} className="modern-article-card">
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{article.outlet}</span>
                       <span>{article.readingMinutes} min read</span>
                     </div>
-                    <h4 className="article-card-title" onClick={() => onReadFull(article)}>
+
+                    <h4 className="article-title-modern" onClick={() => onReadFull(article)}>
                       {article.title}
                     </h4>
-                    <p className="article-card-excerpt">
-                      {article.leadParagraph.slice(0, 150)}...
+
+                    <p className="article-excerpt-modern">
+                      {article.leadParagraph.slice(0, 160)}...
                     </p>
                   </div>
 
                   <div>
-                    <div className="article-tag-list">
+                    <div style={{ marginBottom: '14px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                       {article.tags.map(tag => (
-                        <span key={tag} className="article-tag">
+                        <span key={tag} className="tag-pill-modern">
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px dotted var(--rule-light)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' }}>
                       <button
                         className="btn btn-sm btn-outline"
                         onClick={() => onReadFull(article)}
@@ -66,7 +70,7 @@ export const SectionArticles: React.FC<SectionArticlesProps> = ({
                         <button
                           className={`btn btn-sm ${article.isLiked ? 'btn-primary' : 'btn-outline'}`}
                           onClick={() => onLike(article)}
-                          title="Like and teach AI"
+                          title="Like and reinforce beat"
                         >
                           <ThumbsUp size={11} />
                         </button>
@@ -74,7 +78,7 @@ export const SectionArticles: React.FC<SectionArticlesProps> = ({
                           className="btn btn-sm btn-outline"
                           onClick={() => onSkip(article)}
                           title="Skip and demote"
-                          style={{ color: 'var(--accent-burgundy)' }}
+                          style={{ color: 'var(--accent-rose)' }}
                         >
                           <XCircle size={11} />
                         </button>
@@ -90,3 +94,4 @@ export const SectionArticles: React.FC<SectionArticlesProps> = ({
     </div>
   );
 };
+

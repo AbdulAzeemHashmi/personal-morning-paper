@@ -47,24 +47,28 @@ export const AudioDispatchBar: React.FC<AudioDispatchBarProps> = ({ edition, pro
   };
 
   return (
-    <div className="dispatch-control-bar">
-      <div className="dispatch-left">
-        <span className="dispatch-badge">
-          <Volume2 size={12} /> Morning Audio Dispatch
+    <div className="modern-audio-bar">
+      <div className="audio-bar-left">
+        <span className="audio-icon-badge">
+          <Volume2 size={15} />
         </span>
-        <span className="dispatch-status">
-          {audioState.isPlaying ? (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-              <span className="audio-pulse" />
-              {audioState.progressText}
-            </span>
-          ) : (
-            'Listen to an AI-curated spoken briefing of today\'s broadsheet'
-          )}
-        </span>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--accent-amber)' }}>
+            Daily Spoken Digest {audioState.isPlaying && <span className="audio-pulse" />}
+          </div>
+          <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            {audioState.isPlaying ? (
+              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                {audioState.progressText}
+              </span>
+            ) : (
+              'Listen to an AI-curated spoken audio briefing of today\'s top stories'
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="btn-group">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <button
           className={`btn btn-sm ${audioState.isPlaying && !audioState.isPaused ? 'btn-primary' : 'btn-outline'}`}
           onClick={handleTogglePlay}
@@ -97,3 +101,4 @@ export const AudioDispatchBar: React.FC<AudioDispatchBarProps> = ({ edition, pro
     </div>
   );
 };
+

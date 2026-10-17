@@ -220,47 +220,26 @@ export default function MorningPaperPage() {
   return (
     <div className="newspaper-wrapper">
       {/* Top Architecture & Connectivity Badges */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
         <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '11px',
-            fontFamily: 'var(--font-ui)',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            backgroundColor: '#e8f0fe',
-            color: '#1a73e8',
-            border: '1px solid var(--rule-light)'
-          }}
+          className="info-chip"
           title="Supabase PostgreSQL database connectivity"
         >
-          <Database size={11} />
+          <Database size={12} color="var(--accent-cyan)" />
           Database: Supabase (PostgreSQL 15)
         </span>
 
         <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '11px',
-            fontFamily: 'var(--font-ui)',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            backgroundColor: '#fef7e0',
-            color: '#b06000',
-            border: '1px solid var(--rule-light)'
-          }}
+          className="info-chip"
           title="Multi-Agent Editorial Room: 4 specialized agents active"
         >
-          <Bot size={11} />
+          <Bot size={12} color="var(--accent-amber)" />
           Editorial Room: 4 Multi-Agents Online
         </span>
       </div>
 
       <main className="newspaper-sheet">
+
         {/* Broadsheet Masthead */}
         <Masthead
           edition={edition}
@@ -336,16 +315,16 @@ export default function MorningPaperPage() {
         {/* The Coffee Break / Daily Dilemma with Interactive Solver */}
         <CoffeeBreak coffeeBreak={edition.coffeeBreak} />
 
-        {/* Broadsheet Newspaper Footer */}
-        <footer className="newspaper-footer">
-          <div className="footer-quote">
+        {/* Modern Digital Publication Footer */}
+        <footer className="modern-footer">
+          <div className="footer-quote-modern">
             "{edition.morningQuote.quote}"
           </div>
-          <div style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>
+          <div style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '6px', color: 'var(--text-primary)' }}>
             {edition.morningQuote.author}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>
-            The Personal Morning Paper | Handcrafted daily for {profile.name} | End of Today's Edition
+          <div style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
+            The Personal Morning Paper | Handcrafted daily for {profile.name} | End of Today's Intelligence Briefing
           </div>
         </footer>
       </main>

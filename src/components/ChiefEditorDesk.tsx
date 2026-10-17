@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChiefEditorNote, ReaderProfile } from '../types';
-import { Feather, Compass, Sparkles } from 'lucide-react';
+import { Sparkles, Terminal, ShieldCheck } from 'lucide-react';
 
 interface ChiefEditorDeskProps {
   note: ChiefEditorNote;
@@ -9,26 +9,31 @@ interface ChiefEditorDeskProps {
 
 export const ChiefEditorDesk: React.FC<ChiefEditorDeskProps> = ({ note, profile }) => {
   return (
-    <div className="chief-editor-box">
-      <div className="chief-editor-header">
-        <div className="editor-label">
-          <Feather size={14} /> The Chief Editor's Desk • Morning Address
+    <div className="modern-chief-editor">
+      <div className="chief-editor-top">
+        <div className="editor-badge">
+          <Terminal size={13} color="var(--accent-amber)" />
+          Chief Editor Dispatch | Morning Executive Address
         </div>
-        <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--ink-muted)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'var(--text-muted)' }}>
+          <ShieldCheck size={13} color="var(--accent-emerald)" />
           Curated for {profile.name} ({profile.readingTime} Edition)
         </div>
       </div>
 
-      <h3 className="editor-title">{note.headline}</h3>
-      <p className="editor-narrative">{note.narrative}</p>
+      <h3 className="editor-headline">{note.headline}</h3>
+      <p className="editor-body-text">{note.narrative}</p>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--ink-secondary)', fontFamily: 'var(--font-ui)' }}>
-          <Sparkles size={12} color="var(--accent-gold)" />
-          <strong>Central Theme:</strong> {note.keyTheme}
+      <div className="editor-bottom-bar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <Sparkles size={13} color="var(--accent-amber)" />
+          <strong>Core Focus:</strong> {note.keyTheme}
         </div>
-        <div className="editor-signoff">{note.signoff}</div>
+        <div style={{ fontFamily: 'var(--font-serif-accent)', fontStyle: 'italic', fontSize: '13px', color: 'var(--text-primary)' }}>
+          {note.signoff}
+        </div>
       </div>
     </div>
   );
 };
+

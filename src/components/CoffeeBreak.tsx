@@ -34,24 +34,24 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
   };
 
   return (
-    <div className="coffee-break-container">
+    <div className="modern-coffee-break">
       {/* Riddle & Brain Teaser */}
-      <div className="coffee-riddle-box">
-        <div className="coffee-header">
-          <Coffee size={18} color="var(--accent-burgundy)" />
+      <div className="coffee-riddle-side">
+        <div className="coffee-header-modern">
+          <Coffee size={18} color="var(--accent-amber)" />
           The Coffee Break : Daily Dilemma
         </div>
 
-        <p className="riddle-text">
+        <p className="riddle-text-modern">
           "{coffeeBreak.riddle}"
         </p>
 
-        <div style={{ fontSize: '11px', color: 'var(--ink-muted)', marginBottom: '12px' }}>
-          <strong>Clue:</strong> {coffeeBreak.clue}
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '14px' }}>
+          <strong style={{ color: 'var(--text-secondary)' }}>Clue:</strong> {coffeeBreak.clue}
         </div>
 
         {/* Interactive Answer Input */}
-        <form onSubmit={handleCheckGuess} style={{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' }}>
+        <form onSubmit={handleCheckGuess} style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
           <input
             type="text"
             className="form-input"
@@ -61,7 +61,7 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
               setGuessFeedback(null);
             }}
             placeholder="Type your guess here..."
-            style={{ maxWidth: '240px', padding: '6px 10px', fontSize: '12px' }}
+            style={{ maxWidth: '240px', padding: '6px 12px', fontSize: '12px' }}
           />
           <button type="submit" className="btn btn-sm btn-primary">
             Check Answer
@@ -69,7 +69,7 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
 
           <button
             type="button"
-            className="answer-toggle-btn"
+            className="btn btn-sm btn-outline"
             onClick={() => setShowAnswer(!showAnswer)}
           >
             {showAnswer ? (
@@ -85,20 +85,20 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
         </form>
 
         {guessFeedback === 'correct' && (
-          <div style={{ backgroundColor: '#e6f4ea', color: '#137333', padding: '6px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-            <CheckCircle size={14} /> Brilliant! Your answer is spot on!
+          <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '8px 12px', borderRadius: '6px', fontSize: '12.5px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+            <CheckCircle size={15} /> Brilliant! Your answer is spot on!
           </div>
         )}
 
         {guessFeedback === 'incorrect' && (
-          <div style={{ backgroundColor: '#fce8e6', color: '#c5221f', padding: '6px 10px', borderRadius: '4px', fontSize: '12px', marginBottom: '8px' }}>
+          <div style={{ backgroundColor: 'rgba(244, 63, 94, 0.12)', color: 'var(--accent-rose)', border: '1px solid rgba(244, 63, 94, 0.3)', padding: '8px 12px', borderRadius: '6px', fontSize: '12px', marginBottom: '10px' }}>
             Not quite. Take another look at today's front-page technology lead!
           </div>
         )}
 
         {showAnswer && (
-          <div className="answer-reveal">
-            <strong>Solution:</strong> {coffeeBreak.answer}
+          <div style={{ background: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: '6px', padding: '10px 14px', fontSize: '12.5px', color: 'var(--text-secondary)' }}>
+            <strong style={{ color: 'var(--accent-amber)' }}>Solution:</strong> {coffeeBreak.answer}
           </div>
         )}
       </div>
@@ -106,25 +106,25 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
       {/* Word of the Day & Historical Footnote */}
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-masthead)', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>
-            <BookMarked size={14} color="var(--accent-forest)" /> Word of the Morning
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.2px', color: 'var(--accent-amber)', marginBottom: '8px' }}>
+            <BookMarked size={14} /> Word of the Morning
           </div>
-          <div style={{ fontFamily: 'var(--font-headline)', fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent-burgundy)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {coffeeBreak.wordOfDay.word}
           </div>
-          <div style={{ fontSize: '13px', fontStyle: 'italic', color: 'var(--ink-secondary)', margin: '4px 0' }}>
+          <div style={{ fontSize: '13.5px', fontStyle: 'italic', color: 'var(--text-secondary)', margin: '6px 0' }}>
             {coffeeBreak.wordOfDay.definition}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--ink-muted)' }}>
+          <div style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
             Origin: {coffeeBreak.wordOfDay.origin}
           </div>
         </div>
 
-        <div style={{ borderTop: '1px dotted var(--rule-light)', paddingTop: '10px', marginTop: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--ink-muted)', marginBottom: '4px' }}>
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '12px', marginTop: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', marginBottom: '4px' }}>
             <History size={12} /> Press History Footnote
           </div>
-          <div style={{ fontSize: '11.5px', color: 'var(--ink-secondary)', lineHeight: 1.45 }}>
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
             {coffeeBreak.factOfTheDay}
           </div>
         </div>

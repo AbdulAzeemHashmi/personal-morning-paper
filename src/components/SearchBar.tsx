@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, X, Filter } from 'lucide-react';
+import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { AVAILABLE_CATEGORIES } from '../data/newsFeed';
 
 interface SearchBarProps {
@@ -16,23 +16,23 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onCategoryChange
 }) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '14px 0 20px', flexWrap: 'wrap' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '18px 0 26px', flexWrap: 'wrap' }}>
       {/* Search Input */}
-      <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
-        <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-muted)' }} />
+      <div style={{ position: 'relative', flex: 1, minWidth: '240px' }}>
+        <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
         <input
           type="text"
           className="form-input"
           value={searchTerm}
           onChange={e => onSearchChange(e.target.value)}
-          placeholder="Filter today's broadsheet by keyword..."
-          style={{ paddingLeft: '32px', paddingRight: '28px', height: '34px', fontSize: '13px' }}
+          placeholder="Filter today's briefing by keyword, topic, or source..."
+          style={{ paddingLeft: '36px', paddingRight: '32px', height: '38px', fontSize: '13px' }}
         />
         {searchTerm && (
           <button
             type="button"
             onClick={() => onSearchChange('')}
-            style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-muted)' }}
+            style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
           >
             <X size={14} />
           </button>
@@ -45,9 +45,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           type="button"
           className={`pill-btn ${selectedCategory === 'ALL' ? 'active' : ''}`}
           onClick={() => onCategoryChange('ALL')}
-          style={{ fontSize: '11px', padding: '4px 10px' }}
+          style={{ fontSize: '11.5px', padding: '6px 12px' }}
         >
-          All Beats
+          All Topics
         </button>
         {AVAILABLE_CATEGORIES.map(cat => (
           <button
@@ -55,7 +55,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             type="button"
             className={`pill-btn ${selectedCategory === cat ? 'active' : ''}`}
             onClick={() => onCategoryChange(selectedCategory === cat ? 'ALL' : cat)}
-            style={{ fontSize: '11px', padding: '4px 10px' }}
+            style={{ fontSize: '11.5px', padding: '6px 12px' }}
           >
             {cat}
           </button>
@@ -64,3 +64,4 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     </div>
   );
 };
+

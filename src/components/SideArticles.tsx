@@ -1,6 +1,6 @@
 import React from 'react';
 import { Article } from '../types';
-import { ExternalLink, BookOpen, ThumbsUp, XCircle } from 'lucide-react';
+import { BookOpen, ThumbsUp, XCircle, Flame } from 'lucide-react';
 
 interface SideArticlesProps {
   articles: Article[];
@@ -16,26 +16,35 @@ export const SideArticles: React.FC<SideArticlesProps> = ({
   onLike
 }) => {
   return (
-    <aside className="front-page-side">
-      <div style={{ fontFamily: 'var(--font-masthead)', fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase', borderBottom: '2px solid var(--rule-color)', paddingBottom: '4px', fontWeight: 800 }}>
-        The Morning Dispatches • Essential Briefs
+    <aside className="side-dispatches-column">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--accent-amber)' }}>
+          <Flame size={13} /> Trending Dispatches | Essential Briefs
+        </div>
+        <span style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+          {articles.filter(a => !a.isSkipped).length} stories
+        </span>
       </div>
 
       {articles.map(article => {
         if (article.isSkipped) {
-          return null; // hide skipped articles
+          return null;
         }
 
         return (
-          <div key={article.id} className="side-article-card">
-            <div className="side-category">{article.category}</div>
-            <h3 className="side-title" onClick={() => onReadFull(article)}>
-              {article.title}
-            </h3>
-            <p className="side-excerpt">{article.subhead}</p>
+          <div key={article.id} className="side-dispatch-card">
+            <div>
+              <div className="category-tag-chip" style={{ fontSize: '10px', padding: '2px 8px', marginBottom: '6px' }}>
+                {article.category}
+              </div>
+              <h3 className="side-title-modern" onClick={() => onReadFull(article)}>
+                {article.title}
+              </h3>
+              <p className="side-excerpt-modern">{article.subhead}</p>
+            </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: 'var(--ink-muted)' }}>
-              <span>{article.outlet} • {article.readingMinutes}m</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11.5px', color: 'var(--text-muted)', marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid var(--border-subtle)' }}>
+              <span>{article.outlet} | {article.readingMinutes}m read</span>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <button
                   className="btn btn-sm btn-outline"
@@ -55,7 +64,7 @@ export const SideArticles: React.FC<SideArticlesProps> = ({
                   className="btn btn-sm btn-outline"
                   onClick={() => onSkip(article)}
                   title="Skip story"
-                  style={{ color: 'var(--accent-burgundy)' }}
+                  style={{ color: 'var(--accent-rose)' }}
                 >
                   <XCircle size={11} />
                 </button>
@@ -67,3 +76,4 @@ export const SideArticles: React.FC<SideArticlesProps> = ({
     </aside>
   );
 };
+
