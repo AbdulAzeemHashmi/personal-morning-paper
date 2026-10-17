@@ -15,7 +15,7 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Layers size={20} color="var(--accent-burgundy)" />
             <span style={{ fontFamily: 'var(--font-masthead)', fontWeight: 800, fontSize: '1.2rem' }}>
-              System Architecture & Hackathon Submission Package
+              System Architecture & Technical Specification
             </span>
           </div>
           <button className="modal-close-btn" onClick={onClose}>
@@ -27,7 +27,7 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
           {/* Top Banner */}
           <div style={{ backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--rule-light)', padding: '16px 20px', borderRadius: 'var(--radius-sm)', marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, fontSize: '13px', color: 'var(--accent-burgundy)', marginBottom: '6px' }}>
-              <Sparkles size={16} /> The Personal Morning Paper: Engineering Overview
+              <Sparkles size={16} /> Jimmy Morning Chronicle: Engineering Overview
             </div>
             <p style={{ fontSize: '13px', color: 'var(--ink-secondary)', lineHeight: 1.55 }}>
               A deterministic, privacy-first, zero-hallucination architecture combining authentic 19th-century broadsheet aesthetics with adaptive reinforcement algorithms, web speech synthesis, and vector-grade PDF rendering.
@@ -97,7 +97,7 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
           {/* Submission Deliverables Checklist */}
           <div style={{ marginBottom: '28px' }}>
             <h3 style={{ fontFamily: 'var(--font-masthead)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '14px', borderBottom: '2px solid var(--rule-color)', paddingBottom: '4px' }}>
-              Submission Deliverables Guide (From Hackathon PDF)
+              Project Deliverables
             </h3>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -140,24 +140,24 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
             </div>
           </div>
 
-          {/* Submission Form Link */}
+          {/* Repository Link */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-subtle)', padding: '14px 18px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--rule-color)' }}>
             <div>
               <div style={{ fontWeight: 700, fontSize: '12px', textTransform: 'uppercase', color: 'var(--accent-burgundy)' }}>
-                Official Submission Form
+                Public Repository
               </div>
               <div style={{ fontSize: '11.5px', color: 'var(--ink-secondary)' }}>
-                Submit repo link, Loom video, and architecture diagram
+                Full source code, architecture diagrams, and documentation
               </div>
             </div>
 
             <a
-              href="https://forms.gle/4i4Gf8vNv3Vu8ZLJ7"
+              href="https://github.com/AbdulAzeemHashmi/personal-morning-paper"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-primary"
             >
-              Open Google Form <ExternalLink size={12} />
+              View on GitHub <ExternalLink size={12} />
             </a>
           </div>
         </div>

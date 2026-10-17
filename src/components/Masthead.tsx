@@ -145,7 +145,7 @@ export const Masthead: React.FC<MastheadProps> = ({
           <button
             className="btn btn-sm btn-outline"
             onClick={onOpenArchitecture}
-            title="View system design diagram & hackathon submission specs"
+            title="View system design diagram & technical specification"
           >
             <Sparkles size={13} color="var(--accent-amber)" /> Architecture & Specs
           </button>

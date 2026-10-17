@@ -370,7 +370,7 @@ export default function MorningPaperPage() {
                 "{edition.morningQuote.quote}"
               </div>
               <div style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', color: 'var(--text-primary)', fontSize: '13px' }}>
-                — {edition.morningQuote.author}
+                - {edition.morningQuote.author}
               </div>
               <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
                 Synthesized by the Gemini AI Autonomous Newsroom for {profile.name}. Curated to eliminate feed exhaustion and restore deep morning focus.
