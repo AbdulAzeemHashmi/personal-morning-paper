@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/agents/editorial/route": "/api/agents/editorial",
+  "/api/ask-paper/route": "/api/ask-paper",
+  "/api/news/live/route": "/api/news/live",
+  "/api/profile/route": "/api/profile",
+  "/api/signals/route": "/api/signals",
+  "/page": "/"
+}

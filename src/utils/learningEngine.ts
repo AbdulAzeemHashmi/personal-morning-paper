@@ -46,6 +46,7 @@ export const DEFAULT_SIGNALS: LearningSignals = {
 
 // Storage Helpers
 export function loadReaderProfile(): ReaderProfile {
+  if (typeof window === 'undefined') return DEFAULT_PROFILE;
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.PROFILE);
     if (raw) return JSON.parse(raw);
@@ -56,6 +57,7 @@ export function loadReaderProfile(): ReaderProfile {
 }
 
 export function saveReaderProfile(profile: ReaderProfile): void {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
   } catch (e) {
@@ -64,6 +66,7 @@ export function saveReaderProfile(profile: ReaderProfile): void {
 }
 
 export function loadLearningSignals(): LearningSignals {
+  if (typeof window === 'undefined') return DEFAULT_SIGNALS;
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SIGNALS);
     if (raw) return JSON.parse(raw);
@@ -74,6 +77,7 @@ export function loadLearningSignals(): LearningSignals {
 }
 
 export function saveLearningSignals(signals: LearningSignals): void {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEYS.SIGNALS, JSON.stringify(signals));
   } catch (e) {
@@ -333,6 +337,7 @@ export function generatePersonalEdition(
 }
 
 export function loadCurrentEdition(): PaperEdition {
+  if (typeof window === 'undefined') return generatePersonalEdition();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CURRENT_EDITION);
     if (raw) return JSON.parse(raw);
@@ -345,6 +350,7 @@ export function loadCurrentEdition(): PaperEdition {
 }
 
 export function saveCurrentEdition(edition: PaperEdition): void {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(STORAGE_KEYS.CURRENT_EDITION, JSON.stringify(edition));
     // Also save into historical editions list
@@ -355,6 +361,7 @@ export function saveCurrentEdition(edition: PaperEdition): void {
 }
 
 export function loadEditionsHistory(): PaperEdition[] {
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.EDITIONS);
     if (raw) return JSON.parse(raw);
