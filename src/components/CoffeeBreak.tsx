@@ -17,9 +17,18 @@ export const CoffeeBreak: React.FC<CoffeeBreakProps> = ({ coffeeBreak }) => {
     if (!userGuess.trim()) return;
 
     const normalizedGuess = userGuess.toLowerCase().trim();
-    const solutionKeywords = ['agent', 'ai', 'algorithm', 'swarm', 'artificial intelligence', 'autonomous', 'model'];
+    const answerWords = (coffeeBreak.answer || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .split(/\s+/)
+      .filter(w => w.length > 2);
 
-    const isMatch = solutionKeywords.some(kw => normalizedGuess.includes(kw));
+    const solutionKeywords = Array.from(new Set([
+      ...answerWords,
+      'agent', 'ai', 'algorithm', 'swarm', 'artificial intelligence', 'autonomous', 'model'
+    ]));
+
+    const isMatch = solutionKeywords.some(kw => normalizedGuess.includes(kw) || (normalizedGuess.length > 3 && kw.includes(normalizedGuess)));
 
     if (isMatch) {
       setGuessFeedback('correct');

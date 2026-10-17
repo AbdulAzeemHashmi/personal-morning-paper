@@ -21,6 +21,10 @@ out
 .env.local
 .env.*.local
 
+# Temporary scratch files
+scratch/
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

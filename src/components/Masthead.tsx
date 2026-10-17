@@ -100,9 +100,6 @@ export const Masthead: React.FC<MastheadProps> = ({
 
       {/* Main Modern Masthead */}
       <div className="modern-masthead">
-        <div className="masthead-edition-badge">
-          Vol. {edition.volume} | Issue {edition.issue} : Handcrafted Daily Digest
-        </div>
         <h1 className="modern-masthead-title">
           {profile.newspaperName || 'The Morning Chronicle'}
         </h1>

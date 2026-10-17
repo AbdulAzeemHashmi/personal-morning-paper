@@ -123,7 +123,17 @@ export function registerSkip(articleId: string, category: string, title: string,
 
   // Rerank and save edition
   const currentEdition = loadCurrentEdition();
-  const updatedEdition = markArticleState(currentEdition, articleId, { isSkipped: true });
+  let updatedEdition = markArticleState(currentEdition, articleId, { isSkipped: true });
+
+  // If lead article was skipped, promote the highest unskipped side story to cover position
+  if (updatedEdition.leadArticle.id === articleId) {
+    const candidateSide = updatedEdition.frontPageSideArticles.find(a => !a.isSkipped);
+    if (candidateSide) {
+      updatedEdition.frontPageSideArticles = updatedEdition.frontPageSideArticles.filter(a => a.id !== candidateSide.id);
+      updatedEdition.leadArticle = { ...candidateSide, isLeadStory: true };
+    }
+  }
+
   saveCurrentEdition(updatedEdition);
 
   return { profile, signals, edition: updatedEdition };

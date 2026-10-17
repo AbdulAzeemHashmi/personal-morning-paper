@@ -1,6 +1,6 @@
 import React from 'react';
 import { Article } from '../types';
-import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Sparkles, Clock, Compass } from 'lucide-react';
+import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Sparkles, Clock } from 'lucide-react';
 
 interface LeadArticleProps {
   article: Article;
@@ -17,7 +17,7 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
   onLike,
   onBookmark
 }) => {
-  if (!article) return null;
+  if (!article || article.isSkipped) return null;
 
   return (
     <article className="lead-article-card">

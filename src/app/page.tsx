@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Article, ReaderProfile, LearningSignals, PaperEdition } from '../types';
@@ -29,7 +29,6 @@ import {
   apiFetchSignals,
   apiSendSignalAction
 } from '../services/api';
-import { isSupabaseConfigured } from '../lib/supabase';
 
 import { Masthead } from '../components/Masthead';
 import { AudioDispatchBar } from '../components/AudioDispatchBar';
@@ -49,7 +48,7 @@ import { AskPaperDrawer } from '../components/AskPaperDrawer';
 import { SearchBar } from '../components/SearchBar';
 import { LiveWireBar } from '../components/LiveWireBar';
 import { AgentsRoomModal } from '../components/AgentsRoomModal';
-import { Database, Bot, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Database, Bot, Sparkles } from 'lucide-react';
 
 export default function MorningPaperPage() {
   // Initialize with stable server-safe defaults to avoid SSR/client hydration mismatch.
@@ -125,6 +124,25 @@ export default function MorningPaperPage() {
   const runAutonomousEditorialAssembly = async (p: ReaderProfile, s: LearningSignals, offset: number) => {
     setIsProcessingAgents(true);
     try {
+      // First attempt server-side multi-agent assembly where Gemini 2.5 Flash is running
+      const res = await fetch('/api/agents/editorial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profile: p, signals: s, dateOffsetDays: offset }),
+        signal: AbortSignal.timeout(6500)
+      }).catch(() => null);
+
+      if (res && res.ok) {
+        const data = await res.json();
+        if (data.edition) {
+          setEdition(data.edition);
+          setAgentLogs(data.agentLogs || []);
+          saveCurrentEdition(data.edition);
+          return;
+        }
+      }
+
+      // Fallback to local deterministic agent assembly
       const result = await NewsroomOrchestrator.assembleEdition(p, s, offset);
       setEdition(result.edition);
       setAgentLogs(result.logs);
@@ -243,17 +261,26 @@ export default function MorningPaperPage() {
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
         <span
           className="info-chip"
-          title="Supabase PostgreSQL database connectivity"
+          title="Supabase PostgreSQL database connectivity status"
+          style={{ borderColor: isBackendConnected ? 'var(--accent-forest)' : 'var(--border-subtle)' }}
         >
-          <Database size={12} color="var(--accent-cyan)" />
-          Database: Supabase (PostgreSQL 15)
+          <Database size={12} color={isBackendConnected ? 'var(--accent-forest)' : 'var(--accent-cyan)'} />
+          Database: {isBackendConnected ? 'Supabase PostgreSQL (Active)' : 'Supabase PostgreSQL'}
+        </span>
+
+        <span
+          className="info-chip"
+          title="Google Gemini 2.5 Flash AI Engine Active"
+        >
+          <Sparkles size={12} color="var(--accent-amber)" />
+          AI Engine: Gemini 2.5 Flash Online
         </span>
 
         <span
           className="info-chip"
           title="Multi-Agent Editorial Room: 4 specialized agents active"
         >
-          <Bot size={12} color="var(--accent-amber)" />
+          <Bot size={12} color="var(--accent-violet)" />
           Editorial Room: 4 Multi-Agents Online
         </span>
       </div>
