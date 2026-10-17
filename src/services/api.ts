@@ -1,6 +1,6 @@
 import { ReaderProfile, LearningSignals, Article } from '../types';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 export async function checkServerHealth(): Promise<boolean> {
   try {
@@ -14,9 +14,12 @@ export async function checkServerHealth(): Promise<boolean> {
 export async function apiFetchProfile(): Promise<ReaderProfile | null> {
   try {
     const res = await fetch(`${API_BASE}/profile`, { signal: AbortSignal.timeout(2000) });
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const data = await res.json();
+      return data.profile || data;
+    }
   } catch (e) {
-    console.debug('SQLite server not reachable, using local fallback');
+    console.debug('API server not reachable, using local fallback');
   }
   return null;
 }
@@ -38,9 +41,12 @@ export async function apiSaveProfile(profile: ReaderProfile): Promise<boolean> {
 export async function apiFetchSignals(): Promise<LearningSignals | null> {
   try {
     const res = await fetch(`${API_BASE}/signals`, { signal: AbortSignal.timeout(2000) });
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const data = await res.json();
+      return data.signals || data;
+    }
   } catch {
-    console.debug('SQLite server not reachable, using local fallback');
+    console.debug('API server not reachable, using local fallback');
   }
   return null;
 }
