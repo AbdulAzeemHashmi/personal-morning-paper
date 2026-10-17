@@ -4,14 +4,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"tsx server/index.ts\" \"vite\"",
-    "client": "vite",
-    "server": "tsx server/index.ts",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "oxlint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "better-sqlite3": "^13.0.3",
     "canvas-confetti": "^1.9.4",
     "cors": "^2.8.6",
@@ -19,6 +18,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.58.0",
+    "next": "^16.4.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

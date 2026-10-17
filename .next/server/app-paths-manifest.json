@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/agents/editorial/route": "app/api/agents/editorial/route.js",
+  "/api/ask-paper/route": "app/api/ask-paper/route.js",
+  "/api/news/live/route": "app/api/news/live/route.js",
+  "/api/profile/route": "app/api/profile/route.js",
+  "/api/signals/route": "app/api/signals/route.js",
+  "/page": "app/page.js"
+}

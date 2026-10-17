@@ -1,6 +1,6 @@
 import React from 'react';
 import { PaperEdition, ReaderProfile, LearningSignals } from '../types';
-import { Download, Sliders, Brain, History, Moon, Sparkles, MessageSquare } from 'lucide-react';
+import { Download, Sliders, Brain, History, Moon, Sparkles, MessageSquare, Bot } from 'lucide-react';
 
 interface MastheadProps {
   edition: PaperEdition;
@@ -11,6 +11,7 @@ interface MastheadProps {
   onOpenArchitecture: () => void;
   onOpenSettings: () => void;
   onOpenAskPaper: () => void;
+  onOpenAgentsRoom: () => void;
   onDownloadPDF: () => void;
   isDownloadingPDF: boolean;
   onThemeChange: (theme: 'broadsheet' | 'midnight' | 'sepia') => void;
@@ -26,6 +27,7 @@ export const Masthead: React.FC<MastheadProps> = ({
   onOpenArchitecture,
   onOpenSettings,
   onOpenAskPaper,
+  onOpenAgentsRoom,
   onDownloadPDF,
   isDownloadingPDF,
   onThemeChange,
@@ -104,6 +106,14 @@ export const Masthead: React.FC<MastheadProps> = ({
           >
             <Brain size={12} color="var(--accent-burgundy)" />
             AI Mind ({signals.skipsCount} skips, {signals.likesCount} likes)
+          </button>
+
+          <button
+            className="btn btn-sm btn-outline"
+            onClick={onOpenAgentsRoom}
+            title="Inspect autonomous multi-agent newsroom reasoning"
+          >
+            <Bot size={12} color="var(--accent-burgundy)" /> Agents Room
           </button>
 
           <button
