@@ -2,248 +2,444 @@
 
 ## 1. System Overview
 
-Jimmy Morning Chronicle is a full-stack digital broadsheet application built on the **Next.js 16 App Router**, powered by an autonomous **Multi-Agent Editorial Room** driven by **Google Gemini AI** (text synthesis and Gemini API image generation), and backed by **Supabase PostgreSQL** for persistent multi-tenant storage.
+Jimmy Morning Chronicle is a personal digital newspaper. It looks like an old 19th century broadsheet, but it is built with modern tools.
 
-It bridges the tactile elegance of a traditional 19th-century broadsheet with modern multi-agent reasoning, semantic querying, Gemini AI woodcut engraving generation, speech synthesis audio, and vector-grade PDF generation.
+Main building blocks:
+
+- **Next.js 16 App Router** for the web pages and server routes.
+- **Five AI agents** (the Multi-Agent Editorial Room) that work together to build each morning edition.
+- **Google Gemini AI** for writing text and for making images.
+- **Supabase PostgreSQL** for saving reader data, articles, editions, and feedback.
+
+The app can do these things:
+
+- Build a daily edition that fits each reader.
+- Draw a Victorian style woodcut picture for the cover story.
+- Answer questions about today's paper ("Ask The Paper").
+- Read stories aloud (audio dispatch).
+- Export the paper as a print-ready PDF.
+- Learn from what the reader skips, reads, likes, or bookmarks.
+
+### 1.1 High Level Architecture Diagram
 
 ```mermaid
 flowchart TD
-    subgraph Data_Layer [1. Persistence & Knowledge Feeds]
-        Supa[(Supabase PostgreSQL 15\nProfiles, Editions, Articles, Signals, Weights)]
-        Wire[Real-Time Hacker News / RSS Wire API]
+    Reader["Reader<br/>Browser or Phone"]
+
+    subgraph UI ["1. Reading Surfaces (Frontend)"]
+        Broadsheet["Interactive Broadsheet Page"]
+        Woodcut["Woodcut Engraving Plates"]
+        AgentsUI["Agents Room Viewer"]
+        AskUI["Ask The Paper"]
+        PDF["Print Ready PDF Export"]
+        Audio["Morning Audio Dispatch"]
+        Archive["Past Editions Archive"]
     end
 
-    subgraph Gemini_AI [2. Google Gemini AI Engine]
-        GeminiFlash[Gemini 2.5 / 3.8 Flash\nChief Editor Address + Ask Paper RAG]
-        GeminiImage[Gemini API Image Generation\nImagen 3 & Vector Woodcut Synthesis]
+    subgraph API ["2. Next.js Server Routes (Backend)"]
+        EditorialAPI["api agents editorial"]
+        ImageAPI["api generate-image"]
+        ProfileAPI["api profile"]
+        SignalsAPI["api signals"]
+        ActionAPI["api signals action"]
+        AskAPI["api ask-paper"]
+        LiveAPI["api news live"]
+        HealthAPI["api health"]
     end
 
-    subgraph Multi_Agent_Room [3. Autonomous Multi-Agent Editorial Room]
-        Orchestrator[Newsroom Orchestrator : Central Dispatch]
-        Aura[Chief Editor Agent Aura-1 : Synthesis & Macro-Themes]
-        Nexus[Curator & Reranker Nexus-4 : Bayesian Reranker]
-        DaVinci[Visual Art Director DaVinci-5 : Gemini Image Engraver]
-        Vantage[Nuance & Perspective Vantage-2 : 3-Way Worldview Framing]
-        Minerva[Culture & Leisure Minerva-3 : Daily Dilemma & Etymology]
+    subgraph Agents ["3. Multi-Agent Editorial Room"]
+        Orchestrator["Newsroom Orchestrator<br/>Central dispatch"]
+        Aura["Aura-1<br/>Chief Editor"]
+        Nexus["Nexus-4<br/>Curator and Reranker"]
+        DaVinci["DaVinci-5<br/>Visual Art Director"]
+        Vantage["Vantage-2<br/>Perspective and Nuance"]
+        Minerva["Minerva-3<br/>Culture and Leisure"]
     end
 
-    subgraph NextJS_API [4. Next.js App Router & Server Endpoints]
-        EditorialAPI[/api/agents/editorial : Run 5-Agent Pipeline]
-        ImageAPI[/api/generate-image : Gemini Image Generation]
-        ProfileAPI[/api/profile : Supabase Sync]
-        SignalsAPI[/api/signals : Bayesian Weight Updates]
-        AskPaperAPI[/api/ask-paper : Semantic Q&A]
-        LiveWireAPI[/api/news/live : Wire Dispatches]
-        HealthAPI[/api/health : Server Health Check]
+    subgraph Gemini ["4. Google Gemini AI"]
+        GeminiText["Gemini Flash models<br/>Text and Q and A"]
+        Imagen["Imagen 3<br/>Raster images"]
+        SvgFallback["Gemini Flash<br/>SVG woodcut fallback"]
     end
 
-    subgraph Reading_Surfaces [5. Broadsheet Reading Surfaces]
-        BroadsheetWeb[Next.js Interactive Broadsheet Webpage]
-        WoodcutPlate[Bespoke Editorial Woodcut Engravings]
-        AgentsUI[Agents Room Live Trajectory Viewer]
-        AskPaperUI[Ask The Paper Semantic Assistant]
-        PrintEngine[Print-Grade Broadsheet PDF Generator]
-        AudioDispatch[Morning Audio Dispatch Narration]
-        ArchiveUI[Historical Editions Archive]
+    subgraph Data ["5. Data Layer"]
+        Supa[("Supabase PostgreSQL<br/>Profiles, Articles, Editions,<br/>Signals, Weights")]
+        Wire["Hacker News and RSS Wire"]
     end
 
-    Data_Layer <--> NextJS_API
-    Gemini_AI <--> NextJS_API
-    NextJS_API <--> Multi_Agent_Room
-    Multi_Agent_Room --> Reading_Surfaces
-    Reading_Surfaces -.->|Feedback: Skip -0.25 / Like +0.35| NextJS_API
+    Reader --> UI
+    UI --> API
+    EditorialAPI --> Orchestrator
+    Orchestrator --> Aura
+    Orchestrator --> Nexus
+    Orchestrator --> DaVinci
+    Orchestrator --> Vantage
+    Orchestrator --> Minerva
+    Aura --> GeminiText
+    DaVinci --> Imagen
+    Imagen -.->|"if quota is full"| SvgFallback
+    ImageAPI --> Imagen
+    AskAPI --> GeminiText
+    LiveAPI --> Wire
+    Orchestrator --> Wire
+    ProfileAPI --> Supa
+    SignalsAPI --> Supa
+    ActionAPI --> Supa
+    Nexus --> Supa
+    HealthAPI -.-> Supa
+    HealthAPI -.-> GeminiText
+    UI -.->|"Skip: -0.25, Like: +0.35"| ActionAPI
+```
+
+### 1.2 Request Flow: Building a Morning Edition
+
+This diagram shows what happens when a reader opens the paper.
+
+```mermaid
+sequenceDiagram
+    participant R as Reader
+    participant W as Web App
+    participant E as Editorial API
+    participant O as Orchestrator
+    participant N as Nexus-4
+    participant A as Aura-1
+    participant D as DaVinci-5
+    participant V as Vantage-2
+    participant M as Minerva-3
+    participant DB as Supabase
+
+    R->>W: Open the paper
+    W->>E: POST request with reader id
+    E->>DB: Load profile and weights
+    E->>O: Start pipeline
+    O->>N: Score and rank candidate articles
+    N-->>O: Lead story and column plan
+    par Agents work in parallel
+        O->>A: Write Morning Address
+        O->>D: Make cover woodcut
+        O->>V: Build 3-way perspective dial
+        O->>M: Make dilemma and word of the day
+    end
+    A-->>O: Address text
+    D-->>O: Image URL
+    V-->>O: Perspectives
+    M-->>O: Culture items
+    O-->>E: Finished edition and agent logs
+    E->>DB: Save edition and articles
+    E-->>W: Broadsheet data
+    W-->>R: Show the paper
+```
+
+### 1.3 Feedback Loop
+
+```mermaid
+flowchart LR
+    A["Reader sees edition"] --> B["Reader skips, reads,<br/>likes, or bookmarks"]
+    B --> C["api signals action"]
+    C --> D["Save signal in<br/>interaction_signals"]
+    D --> E["Update category and<br/>keyword weights"]
+    E --> F["Nexus-4 uses new weights<br/>next morning"]
+    F --> A
 ```
 
 ---
 
-## 2. Multi-Agent Editorial Room Architecture
+## 2. Multi-Agent Editorial Room
 
-Rather than relying on a single monolithic prompt, five specialized autonomous agents collaborate on an editorial blackboard to assemble each morning edition:
+Instead of one big prompt, five small agents each do one job. They share their results on a common "editorial blackboard". The Newsroom Orchestrator controls the order of work and collects the output.
 
 ### A. Chief Editor Agent (Aura-1)
-- **Role**: Editorial Voice & Macro Synthesis.
-- **Responsibilities**:
-  - Reviews candidate headlines across the globe.
-  - Identifies the overarching civilizational or technological narrative of the day.
-  - Formulates the **Chief Editor Morning Address**, customized to the reader's name, time budget, and editorial disposition (analytical, executive, curious, contrarian).
-  - Powered by `gemini-2.5-flash` / `gemini-3.8-flash` via `src/lib/gemini.ts`.
 
-### B. Curator & Reranker Agent (Nexus-4)
-- **Role**: Quantitative Relevance & Broadsheet Layout Allocator.
-- **Responsibilities**:
-  - Evaluates candidate articles against reader baseline beats and learned weights.
-  - Computes dynamic relevance scores using Bayesian feedback multipliers:
+- **Role**: Editorial voice and big picture summary.
+- **What it does**:
+  - Reads candidate headlines from around the world.
+  - Finds the main story or theme of the day.
+  - Writes the **Chief Editor Morning Address**. It uses the reader's name, time budget, and preferred tone (analytical, executive, curious, or provocative).
+  - Uses `gemini-2.5-flash` or `gemini-3.8-flash` through `src/lib/gemini.ts`.
+
+### B. Curator and Reranker Agent (Nexus-4)
+
+- **Role**: Scores articles and plans the page layout.
+- **What it does**:
+  - Compares each candidate article with the reader's favorite topics and learned weights.
+  - Gives each article a relevance score:
+
     `S(Ai) = (B_cat x W_cat) + sum(M_k x W_k) - P_skip + R_novelty`
-  - Selects the **Front Page Anchor / Lead Story**, curates secondary side dispatches, and organizes thematic columns.
 
-### C. Visual Art Director & Engraver Agent (DaVinci-5)
-- **Role**: Broadsheet Art Direction & Gemini Image Generation.
-- **Responsibilities**:
-  - Evaluates the lead story headline, category, and thematic subhead.
-  - Formulates an authentic Victorian newspaper engraving visual prompt with monochrome cross-hatching, framing borders, and thematic allegories.
-  - Calls `generateImageWithGemini` to synthesize bespoke cover engravings via Google Imagen 3 (`imagen-3.0-generate-002:predict`) and Gemini Flash vector synthesis.
-  - Attaches the resulting high-resolution artwork to `leadArticle.imageUrl` for broadsheet display, modal view, and PDF rendering.
+  - What the symbols mean:
+    - `B_cat`: base score for the article's category.
+    - `W_cat`: the reader's learned weight for that category.
+    - `M_k` and `W_k`: keyword matches and the reader's learned weight for each keyword.
+    - `P_skip`: a penalty if the reader often skips this kind of story.
+    - `R_novelty`: a small bonus for fresh topics, so the paper does not get boring.
+  - Picks the **Front Page Lead Story**, the side dispatches, and the themed columns.
 
-### D. Perspective & Nuance Agent (Vantage-2)
-- **Role**: Investigative Balance & Bias Deconstruction.
-- **Responsibilities**:
-  - Scrutinizes polarizing or complex stories.
-  - Generates a **3-Way Perspective Dial** breaking down the story through distinct lenses (e.g. Technological Capability, Capital & Economic Velocity, and Systemic Vulnerability).
+### C. Visual Art Director and Engraver Agent (DaVinci-5)
 
-### E. Culture & Leisure Agent (Minerva-3)
-- **Role**: Intellectual Wellness & Morning Reflection.
-- **Responsibilities**:
-  - Generates the daily **Coffee Break Dilemma** and validates interactive guesses.
-  - Selects the **Word of the Morning** with phonetic and etymological roots.
-  - Curates historical press trivia dating back to Fleet Street in 1702.
+- **Role**: Art direction and image generation.
+- **What it does**:
+  - Looks at the lead story headline, category, and subhead.
+  - Writes an image prompt for a Victorian newspaper engraving. The prompt asks for black and white cross-hatching, a framing border, and a symbolic scene.
+  - Calls `generateImageWithGemini` to make the cover art with Imagen 3 (`imagen-3.0-generate-002:predict`). If that fails, it uses Gemini Flash to draw an SVG woodcut.
+  - Saves the result in `leadArticle.imageUrl`. The picture is used on the page, in the modal view, and in the PDF.
+
+### D. Perspective and Nuance Agent (Vantage-2)
+
+- **Role**: Balance and bias checks.
+- **What it does**:
+  - Reviews stories that are complex or divide opinion.
+  - Builds a **3-Way Perspective Dial** that shows the story from three angles. Example angles: Technological Capability, Capital and Economic Speed, and Systemic Risk.
+
+### E. Culture and Leisure Agent (Minerva-3)
+
+- **Role**: Light reading and morning reflection.
+- **What it does**:
+  - Makes the daily **Coffee Break Dilemma** and checks the reader's guesses.
+  - Picks the **Word of the Morning** with its sound and word origin.
+  - Adds press history trivia, going back to Fleet Street in 1702.
 
 ---
 
-## 3. Gemini AI Integration (Text & Image Generation)
+## 3. Gemini AI Integration
 
-### Text Synthesis & RAG Assistant
-- **Client**: `src/lib/gemini.ts` using `@google/genai` with model cascading across `gemini-2.5-flash`, `gemini-3.8-flash`, and `gemini-flash-latest`.
-- **Chief Editor Address**: `src/agents/ChiefEditorAgent.ts` constructs a context-rich prompt with global themes, reader profile, and editorial tone. The Gemini response is injected into the broadsheet Morning Address component.
-- **Ask Paper RAG**: `src/app/api/ask-paper/route.ts` builds a corpus from today's article summaries and lead paragraphs, then passes the reader's question to Gemini with a citation-grounded system prompt.
+### 3.1 Text and Question Answering
 
-### Gemini API Image Generation Pipeline
+- **Client**: `src/lib/gemini.ts`, using the `@google/genai` package.
+- **Model fallback**: The client tries `gemini-2.5-flash` first, then `gemini-3.8-flash`, then `gemini-flash-latest`. If one model fails, the next one is used.
+- **Chief Editor Address**: `src/agents/ChiefEditorAgent.ts` builds a prompt with the day's themes, the reader profile, and the tone. The reply from Gemini is shown in the Morning Address block.
+- **Ask The Paper**: `src/app/api/ask-paper/route.ts` builds a small knowledge base from today's article summaries and lead paragraphs. It sends the reader's question to Gemini with a system prompt that requires answers to cite the articles.
+
+### 3.2 Image Generation Pipeline
+
 - **Service**: `generateImageWithGemini(prompt, options)` in `src/lib/gemini.ts`.
-- **Imagen 3 Integration**:
-  - Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`.
-  - Generates 16:9 high-resolution broadsheet illustrations.
-- **Gemini Flash Vector Woodcut Synthesis**:
-  - Automatic fallback synthesizing bespoke, scalable Victorian SVG woodcuts when raster quota is restricted.
-  - Enforces monochrome ink line-work, cross-hatching patterns, and classical decorative framing.
-- **On-Demand Re-Engraving**:
-  - Readers can click **"Regenerate Art (Gemini)"** on the cover story at any time.
-  - Dispatches a request to `/api/generate-image` and seamlessly updates the live edition image.
-- **Environment variable**: `GEMINI_API_KEY` (server-side only, never exposed to client).
+- **Imagen 3 (main path)**:
+  - Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`
+  - Makes 16:9 high resolution broadsheet pictures.
+- **Gemini Flash SVG woodcut (fallback path)**:
+  - Used when the image quota is used up.
+  - Draws a scalable Victorian style SVG woodcut.
+  - Keeps the style rules: ink line work only, cross-hatching, and a classic frame.
+- **Regenerate on demand**:
+  - Readers can click **Regenerate Art (Gemini)** on the cover story.
+  - The page calls `/api/generate-image` and swaps the new picture into the live edition.
+- **Secret key**: `GEMINI_API_KEY` stays on the server only. It is never sent to the browser.
+
+```mermaid
+flowchart TD
+    Start["Image request<br/>from DaVinci-5 or reader click"] --> Build["Build engraving prompt"]
+    Build --> Try["Call Imagen 3"]
+    Try -->|"Success"| Raster["Return raster image"]
+    Try -->|"Quota or error"| Fallback["Ask Gemini Flash for SVG woodcut"]
+    Fallback --> Svg["Return SVG image"]
+    Raster --> Save["Set leadArticle.imageUrl"]
+    Svg --> Save
+```
 
 ---
 
-## 4. Database Architecture: Supabase PostgreSQL
+## 4. Database: Supabase PostgreSQL
 
-All data structures are defined in PostgreSQL 15+ (`supabase/migrations/20261017_init.sql`):
+All tables are created in PostgreSQL 15 or newer. The schema file is `supabase/migrations/20261017_init.sql`.
 
-### Tables:
-1. **`reader_profiles`**:
-   - `id` (UUID PRIMARY KEY).
-   - `user_id` (TEXT UNIQUE): Reader identity.
-   - `name`, `location`, `newspaper_name`, `motto`: Masthead styling.
+### 4.1 Tables
+
+1. **`reader_profiles`**
+   - `id` (UUID, primary key).
+   - `user_id` (TEXT, unique): the reader's identity.
+   - `name`, `location`, `newspaper_name`, `motto`: used for the masthead.
    - `reading_time`: `5min`, `15min`, or `30min`.
    - `tone`: `analytical`, `executive`, `curious`, or `provocative`.
-   - `topics` (JSONB): Primary editorial beats.
-   - `keywords` (JSONB): Micro-topics and tags.
+   - `topics` (JSONB): main topics the reader follows.
+   - `keywords` (JSONB): smaller topics and tags.
    - `theme`: `broadsheet`, `midnight`, or `sepia`.
-   - `onboarding_completed`: Boolean flag.
+   - `onboarding_completed`: true or false.
 
-2. **`articles`**:
-   - `id` (TEXT PRIMARY KEY): Unique story identifier.
-   - `title`, `subhead`, `author`, `outlet`, `outlet_url`, `published_at`, `category`: Metadata.
-   - `tags` (JSONB), `reading_minutes`, `lead_paragraph`, `full_body` (JSONB), `pull_quote`, `image_url`: Story content.
-   - `nuance_perspectives` (JSONB): Multi-viewpoint breakdown.
+2. **`articles`**
+   - `id` (TEXT, primary key): unique story id.
+   - `title`, `subhead`, `author`, `outlet`, `outlet_url`, `published_at`, `category`: basic details.
+   - `tags` (JSONB), `reading_minutes`, `lead_paragraph`, `full_body` (JSONB), `pull_quote`, `image_url`: story content.
+   - `nuance_perspectives` (JSONB): the different viewpoints.
 
-3. **`editions`**:
-   - `edition_id` (TEXT PRIMARY KEY): Date-stamped edition identifier.
-   - `volume`, `issue`, `weather` (JSONB), `morning_quote` (JSONB), `chief_editor_note` (JSONB), `coffee_break` (JSONB).
+3. **`editions`**
+   - `edition_id` (TEXT, primary key): an id that includes the date.
+   - `volume`, `issue`.
+   - `weather` (JSONB), `morning_quote` (JSONB), `chief_editor_note` (JSONB), `coffee_break` (JSONB).
 
-4. **`interaction_signals`**:
-   - `id` (BIGSERIAL PRIMARY KEY).
-   - `user_id`, `article_id`, `title`, `category`, `action` (`skip`, `read`, `like`, `bookmark`), `created_at`.
+4. **`interaction_signals`**
+   - `id` (BIGSERIAL, primary key).
+   - `user_id`, `article_id`, `title`, `category`.
+   - `action`: `skip`, `read`, `like`, or `bookmark`.
+   - `created_at`.
 
-5. **`category_weights` & `keyword_weights`**:
-   - `user_id`, `category` / `keyword` (PRIMARY KEY).
-   - `weight` (NUMERIC): Dynamic affinity multiplier (0.20 to 3.50).
+5. **`category_weights`** and **`keyword_weights`**
+   - `user_id` plus `category` or `keyword` form the primary key.
+   - `weight` (NUMERIC): how much the reader likes this item. The value stays between 0.20 and 3.50.
+
+### 4.2 Table Relationships
+
+```mermaid
+erDiagram
+    reader_profiles ||--o{ interaction_signals : "creates"
+    reader_profiles ||--o{ category_weights : "has"
+    reader_profiles ||--o{ keyword_weights : "has"
+    articles ||--o{ interaction_signals : "receives"
+    editions }o--o{ articles : "contains"
+
+    reader_profiles {
+        uuid id PK
+        text user_id UK
+        text name
+        text tone
+        text theme
+        boolean onboarding_completed
+    }
+    articles {
+        text id PK
+        text title
+        text category
+        jsonb nuance_perspectives
+        text image_url
+    }
+    editions {
+        text edition_id PK
+        text volume
+        text issue
+        jsonb coffee_break
+    }
+    interaction_signals {
+        bigint id PK
+        text user_id
+        text article_id
+        text action
+    }
+    category_weights {
+        text user_id PK
+        text category PK
+        numeric weight
+    }
+    keyword_weights {
+        text user_id PK
+        text keyword PK
+        numeric weight
+    }
+```
 
 ---
 
-## 5. Next.js Server Route Handlers
+## 5. Next.js Server Routes
 
-| Route | Method | Description |
+| Route | Method | What it does |
 |---|---|---|
-| `/api/agents/editorial` | POST | Triggers the 5-Agent Newsroom Orchestrator pipeline, returns assembled broadsheet and live agent logs |
-| `/api/generate-image` | POST / GET | Synthesizes broadsheet woodcut editorial illustrations via Gemini API (Imagen 3 & Vector Synthesis) |
-| `/api/profile` | GET / POST | Reads and persists reader configuration to Supabase PostgreSQL |
-| `/api/signals` | GET / POST | Retrieves affinity matrix and logs reader interactions |
-| `/api/signals/action` | POST | Records individual skip / read / like / bookmark actions |
-| `/api/ask-paper` | POST | Semantic Q&A answering inquiries with citations from today's articles via Gemini AI |
-| `/api/news/live` | GET | Fetches real-time wire dispatches from Hacker News API |
-| `/api/health` | GET | Server, Supabase, and Gemini API connectivity health check |
+| `/api/agents/editorial` | POST | Runs the 5-agent pipeline. Returns the finished broadsheet and live agent logs. |
+| `/api/generate-image` | POST / GET | Makes woodcut pictures with Gemini (Imagen 3 or SVG fallback). |
+| `/api/profile` | GET / POST | Reads and saves reader settings in Supabase. |
+| `/api/signals` | GET / POST | Returns the weight matrix and logs reader actions. |
+| `/api/signals/action` | POST | Saves one skip, read, like, or bookmark action. |
+| `/api/ask-paper` | POST | Answers questions with citations from today's articles, using Gemini. |
+| `/api/news/live` | GET | Gets live wire news from the Hacker News API. |
+| `/api/health` | GET | Checks the server, Supabase, and Gemini connection. |
 
 ---
 
-## 6. Design System & UI Architecture
+## 6. Design System and UI
 
-### Color Token System (`src/index.css`)
-All colors are defined as CSS custom properties on `:root` for each theme:
-- **Broadsheet** (default): Warm cream paper tones with ink-dark text.
-- **Midnight**: Obsidian background with high-contrast amber accents.
-- **Sepia**: Antique parchment with cognac borders.
+### 6.1 Color Tokens (`src/index.css`)
 
-WCAG AA/AAA compliance is enforced across all three themes on text-muted, text-secondary, and text-primary tokens.
+All colors are CSS custom properties on `:root`, one set for each theme:
 
-### Grid Layout Principles
-- **Front Page**: 2:1 grid (`grid-template-columns: 2fr 1fr`) with the Morning Intelligence Wire card balancing the side column height against the lead story.
-- **Single-Child Section Constraint**: `.section-grid-modern:has(> :only-child)` caps isolated section cards at 580px to prevent full-width banner stretching.
-- **Responsive Breakpoints**: 1024px collapses the 2:1 grid to single-column; 768px collapses footer and navigation grids.
+- **Broadsheet** (default): warm cream paper with dark ink text.
+- **Midnight**: very dark background with strong amber accents.
+- **Sepia**: old parchment with cognac colored borders.
 
-### Sticky Navigation
-- `.modern-top-bar` uses `position: sticky; top: 12px; z-index: 80; backdrop-filter: blur(20px)` for persistent access to PDF export, theme controls, and reader preferences while scrolling.
+All three themes meet WCAG AA or AAA contrast rules for the `text-muted`, `text-secondary`, and `text-primary` tokens.
 
-### Print Media (`@media print`)
-- Hides all interactive controls, search bars, and floating chips.
-- Formats articles and editorial woodcuts into clean, border-defined newsprint with `page-break-inside: avoid`.
+### 6.2 Grid Layout Rules
+
+- **Front page**: a 2 to 1 grid (`grid-template-columns: 2fr 1fr`). The Morning Intelligence Wire card fills the side column so it matches the height of the lead story.
+- **Single card rule**: `.section-grid-modern:has(> :only-child)` limits a lone section card to 580px. This stops it from stretching across the whole page.
+- **Responsive breakpoints**:
+  - At 1024px, the 2 to 1 grid becomes one column.
+  - At 768px, the footer and navigation grids become simpler.
+
+### 6.3 Sticky Navigation
+
+- `.modern-top-bar` uses `position: sticky; top: 12px; z-index: 80; backdrop-filter: blur(20px)`.
+- It keeps PDF export, theme controls, and reader settings in reach while the reader scrolls.
+
+### 6.4 Print Styles (`@media print`)
+
+- Hides buttons, search bars, and floating chips.
+- Shows articles and woodcut pictures as clean newsprint with borders.
+- Uses `page-break-inside: avoid` so stories do not split across pages.
 
 ---
 
-## 7. Distinctive Features
+## 7. Main Features
 
-1. **AI Editorial Broadsheet Woodcuts**: Front page cover stories feature Victorian woodcut engravings synthesized dynamically via Google Gemini API image generation.
-2. **Multi-Agent Newsroom Inspector**: Live modal displaying 5-agent reasoning and step-by-step assembly logs.
-3. **Ask The Paper**: Gemini-powered natural language assistant answering questions using today's broadsheet knowledge base.
-4. **Interactive Coffee Break**: Puzzle with real-time answer input, automated grading, celebratory confetti, and solution reveal.
-5. **Typographic & Audio Controls**: Font size scaling (A- / A+), full-paper and per-story speech synthesis narration, and quote sharing.
-6. **Print-Grade PDF Engine**: 1-click authentic broadsheet PDF export with woodcut artwork.
-7. **Morning Intelligence Wire**: Persistent side column supplement with live market and frontier tech updates.
-8. **Broadsheet Editorial Footer**: Multi-column colophon with section navigation, console shortcuts, and back-to-top button.
+1. **AI Woodcut Engravings**: The front page cover story gets a Victorian woodcut made by Gemini image generation.
+2. **Newsroom Inspector**: A live window that shows what the 5 agents are thinking and doing, step by step.
+3. **Ask The Paper**: A Gemini assistant that answers questions using today's paper.
+4. **Interactive Coffee Break**: A puzzle with live answer checking, confetti, and a solution reveal.
+5. **Text and Audio Controls**: Font size buttons (A- and A+), narration for the whole paper or one story, and quote sharing.
+6. **Print Ready PDF**: One click export of the paper with woodcut art.
+7. **Morning Intelligence Wire**: A side column with live market and frontier tech updates.
+8. **Editorial Footer**: A multi-column footer with section links, console shortcuts, and a back-to-top button.
 
 ---
 
 ## 8. Deployment
 
-- **Platform**: Vercel (automatic CI/CD from `main` branch).
+- **Platform**: Vercel, with automatic deploys from the `main` branch.
 - **Live URL**: https://personal-morning-paper.vercel.app
-- **Required Environment Variables on Vercel**:
-  - `GEMINI_API_KEY`
+- **Required environment variables on Vercel**:
+  - `GEMINI_API_KEY` (server only)
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  - `SUPABASE_SERVICE_ROLE_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (server only)
+
+```mermaid
+flowchart LR
+    Dev["Developer<br/>push to main"] --> GH["GitHub"]
+    GH --> Vercel["Vercel build and deploy"]
+    Vercel --> App["Live app"]
+    App --> Supabase[("Supabase")]
+    App --> GeminiAPI["Gemini API"]
+    Env["Environment variables"] -.-> Vercel
+```
 
 ---
 
-## 9. 4-Stage Pipeline Reference
+## 9. Four Stage Pipeline
 
-The application processes each morning edition through four sequential stages:
+Each morning edition moves through four stages:
 
 | Stage | Name | Inputs | Outputs |
 |---|---|---|---|
-| 1 | Knowledge Feeds | Global Wire & RSS, Multi-beat Outlets, Perspective Metadata | Raw candidate articles |
-| 2 | Editorial Engine | Candidate articles + Reader profile + Learned weights | 5-agent ranked edition with Gemini image generation |
-| 3 | Broadsheet UX | Curated edition data & woodcut plates | Interactive webpage, Morning Audio Dispatch, High-Res PDF |
+| 1 | Knowledge Feeds | Global wire and RSS, outlets for many topics, perspective data | Raw candidate articles |
+| 2 | Editorial Engine | Candidate articles, reader profile, learned weights | A ranked edition made by 5 agents, with Gemini image generation |
+| 3 | Broadsheet UX | Finished edition and woodcut plates | Interactive web page, Morning Audio Dispatch, high resolution PDF |
 | 4 | Feedback Loop | Reader actions (skip, read, like, bookmark) | Updated Bayesian weight matrix |
 
-> Continuous Reinforcement: Reader signals immediately update the local Bayesian weight matrix, recalibrating the next morning's lead story and column priorities.
+> **Continuous learning**: Every reader action updates the weight matrix right away. The next morning, the lead story and column order change to match.
+
+```mermaid
+flowchart LR
+    S1["Stage 1<br/>Knowledge Feeds"] --> S2["Stage 2<br/>Editorial Engine"]
+    S2 --> S3["Stage 3<br/>Broadsheet UX"]
+    S3 --> S4["Stage 4<br/>Feedback Loop"]
+    S4 -.->|"Updated weights"| S2
+```
 
 ---
 
 ## 10. Product Walkthrough Guide
 
-Recommended demonstration flow for a 5-minute product walkthrough:
+A suggested 5 minute demo:
 
-| Timestamp | Topic | What to Cover |
+| Time | Topic | What to show |
 |---|---|---|
-| 0:00 - 1:00 | Problem & Onboarding | Explain information scatter problem; walk through the Onboarding printing press setup modal (name, topics, tone, reading time) |
-| 1:00 - 2:30 | Digital Broadsheet Experience | Show Masthead, Lead story with Gemini API woodcut engraving, Morning Audio Dispatch, multi-column section layout, and theme switcher |
-| 2:30 - 3:30 | Adaptive Learning Demo | Skip an article (show -0.25 weight penalty), Like a story (+0.35 boost), open the Learning Matrix Drawer to visualize weight shifts, run Simulate Next Morning |
-| 3:30 - 4:15 | Room to Explore Features | Chief Editor AI Morning Address, Gemini on-demand image re-engraving, Nuance Lens 3-way dial, Coffee Break dilemma, Historical Editions Archive |
-| 4:15 - 5:00 | PDF & Architecture | Trigger 1-click Broadsheet PDF generation; open About modal to show tech stack; point to ARCHITECTURE.md on GitHub |
+| 0:00 to 1:00 | Problem and Onboarding | Explain the problem of news being scattered everywhere. Walk through the onboarding "printing press" setup (name, topics, tone, reading time). |
+| 1:00 to 2:30 | Digital Broadsheet | Show the masthead, the lead story with its Gemini woodcut, the Morning Audio Dispatch, the multi-column sections, and the theme switcher. |
+| 2:30 to 3:30 | Adaptive Learning | Skip an article (weight drops by 0.25). Like a story (weight rises by 0.35). Open the Learning Matrix Drawer to see the weights move. Run Simulate Next Morning. |
+| 3:30 to 4:15 | More Features | Show the Chief Editor Morning Address, on-demand image re-engraving, the Nuance Lens 3-way dial, the Coffee Break dilemma, and the Past Editions Archive. |
+| 4:15 to 5:00 | PDF and Architecture | Export the PDF in one click. Open the About window to show the tech stack. Point to ARCHITECTURE.md on GitHub. |
