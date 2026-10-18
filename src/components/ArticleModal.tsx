@@ -145,11 +145,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </div>
           </div>
 
-          {false && (
+          {article && false && (
             <div style={{ marginBottom: '20px', padding: '8px', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)' }}>
               <img
-                src={article.imageUrl}
-                alt={`Editorial illustration for ${article.title}`}
+                src={article?.imageUrl}
+                alt={`Editorial illustration for ${article?.title ?? 'article'}`}
                 style={{ width: '100%', maxHeight: '360px', objectFit: 'contain', display: 'block', borderRadius: '4px', backgroundColor: '#f4efe6' }}
               />
               <div style={{ marginTop: '6px', fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', fontStyle: 'italic' }}>
