@@ -1,5 +1,6 @@
 import { Article, ReaderProfile, LearningSignals, PaperEdition, NuancePerspective } from '../types';
 import { INITIAL_ARTICLES, MOCK_CHIEF_EDITOR_NOTE, MOCK_COFFEE_BREAK } from '../data/newsFeed';
+import { generateBroadsheetWoodcutSvg, svgToDataUrl } from '../lib/broadsheetArt';
 
 const STORAGE_KEYS = {
   PROFILE: 'pmp_reader_profile',
@@ -293,6 +294,12 @@ export function generatePersonalEdition(
   // Lead story is highest scored non-skipped article
   const leadArticle = sorted[0];
   leadArticle.isLeadStory = true;
+  if (!leadArticle.imageUrl) {
+    leadArticle.imageUrl = svgToDataUrl(generateBroadsheetWoodcutSvg({
+      title: leadArticle.title,
+      category: leadArticle.category
+    }));
+  }
 
   // Front page side articles (next 2-3 highest)
   const frontPageSideArticles = sorted.slice(1, 3);
@@ -357,7 +364,17 @@ export function loadCurrentEdition(): PaperEdition {
   if (typeof window === 'undefined') return generatePersonalEdition();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CURRENT_EDITION);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed: PaperEdition = JSON.parse(raw);
+      if (parsed.leadArticle && !parsed.leadArticle.imageUrl) {
+        parsed.leadArticle.imageUrl = svgToDataUrl(generateBroadsheetWoodcutSvg({
+          title: parsed.leadArticle.title,
+          category: parsed.leadArticle.category
+        }));
+        saveCurrentEdition(parsed);
+      }
+      return parsed;
+    }
   } catch (e) {
     console.warn('Failed to load current edition, generating fresh one', e);
   }

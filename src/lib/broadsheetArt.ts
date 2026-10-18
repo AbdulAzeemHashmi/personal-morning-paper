@@ -177,10 +177,17 @@ export function generateBroadsheetWoodcutSvg(config: WoodcutConfig): string {
 }
 
 export function svgToDataUrl(svgString: string): string {
+  if (typeof window !== 'undefined' && typeof window.btoa === 'function') {
+    try {
+      const base64 = window.btoa(unescape(encodeURIComponent(svgString)));
+      return `data:image/svg+xml;base64,${base64}`;
+    } catch {
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
+    }
+  }
   if (typeof Buffer !== 'undefined') {
     const base64 = Buffer.from(svgString).toString('base64');
     return `data:image/svg+xml;base64,${base64}`;
   }
-  // Browser fallback
   return `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
 }

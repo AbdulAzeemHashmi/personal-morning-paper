@@ -129,7 +129,7 @@ export default function MorningPaperPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profile: p, signals: s, dateOffsetDays: offset }),
-        signal: AbortSignal.timeout(6500)
+        signal: AbortSignal.timeout(15000)
       }).catch(() => null);
 
       if (res && res.ok) {

@@ -21,7 +21,11 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
   useEffect(() => {
-    setImageUrl(article.imageUrl);
+    if (article.imageUrl) {
+      setImageUrl(article.imageUrl);
+    } else {
+      handleRegenerateArt();
+    }
   }, [article.id, article.imageUrl]);
 
   if (!article || article.isSkipped) return null;
@@ -135,7 +139,7 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
               }}
             >
               <span>
-                <strong>FIG. I.</strong> Editorial Woodcut • Generated via Google Gemini API
+                <strong>FIG. 1:</strong> Editorial Woodcut • Generated via Google Gemini API
               </span>
               <button
                 type="button"
@@ -154,28 +158,23 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
+              flexDirection: 'column',
               alignItems: 'center',
-              padding: '12px 14px',
-              backgroundColor: 'var(--bg-card)',
-              border: '1px dashed var(--border-subtle)',
-              borderRadius: '4px'
+              justifyContent: 'center',
+              padding: '24px 14px',
+              backgroundColor: '#f5efe6',
+              border: '2px dashed var(--border-subtle)',
+              borderRadius: '4px',
+              textAlign: 'center'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
-              <Sparkles size={14} color="var(--accent-amber)" />
-              <span>Engrave bespoke Victorian editorial illustration with Gemini AI</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#78350f', fontWeight: 700, marginBottom: '4px' }}>
+              <RefreshCw size={15} className="audio-pulse" />
+              <span>Visual Art Director (DaVinci-5): Engraving Cover Plate via Gemini API...</span>
             </div>
-            <button
-              type="button"
-              className="btn btn-sm btn-primary"
-              onClick={handleRegenerateArt}
-              disabled={isGenerating}
-              style={{ fontSize: '11.5px', padding: '4px 10px' }}
-            >
-              <RefreshCw size={11} className={isGenerating ? 'audio-pulse' : ''} />
-              {isGenerating ? 'Engraving with Gemini...' : 'Generate with Gemini'}
-            </button>
+            <div style={{ fontSize: '11px', color: '#57534e', fontStyle: 'italic' }}>
+              Synthesizing bespoke 19th-century broadsheet woodcut for "{article.title}"
+            </div>
           </div>
         )}
       </div>
