@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Layers, GitBranch, ExternalLink, X, BookOpen, Sparkles } from 'lucide-react';
 
 interface ArchitectureModalProps {
@@ -31,7 +31,7 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
               <Sparkles size={13} /> About This Application
             </div>
             <p style={{ fontSize: '13px', color: 'var(--ink-secondary)', lineHeight: 1.6, margin: 0 }}>
-              A full-stack personal broadsheet powered by a Multi-Agent Editorial Room, Google Gemini 2.5 Flash AI, and Supabase PostgreSQL. Restores the ritual and tactile elegance of the morning newspaper with adaptive Bayesian learning.
+              A full-stack personal broadsheet powered by a Multi-Agent Editorial Room, Google Gemini AI (Flash &amp; Imagen 3 Image Generation), and Supabase PostgreSQL. Restores the ritual and tactile elegance of the morning newspaper with adaptive Bayesian learning.
             </p>
           </div>
 
@@ -42,7 +42,8 @@ export const ArchitectureModal: React.FC<ArchitectureModalProps> = ({ isOpen, on
             </div>
             {[
               ['Framework', 'Next.js 16 App Router (Turbopack)'],
-              ['AI Engine', 'Google Gemini 2.5 Flash'],
+              ['AI Engine', 'Google Gemini 2.5/3.8 Flash'],
+              ['Image Generation', 'Gemini API (Imagen 3 & Vector Engraver)'],
               ['Database', 'Supabase PostgreSQL 15'],
               ['Styling', 'Vanilla CSS Design System'],
               ['Deployment', 'Vercel'],

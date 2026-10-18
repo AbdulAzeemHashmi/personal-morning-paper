@@ -270,18 +270,18 @@ export default function MorningPaperPage() {
 
         <span
           className="info-chip"
-          title="Google Gemini 2.5 Flash AI Engine Active"
+          title="Google Gemini AI Engine: Flash Synthesis & Imagen 3 Art Direction Active"
         >
           <Sparkles size={12} color="var(--accent-amber)" />
-          AI Engine: Gemini 2.5 Flash Online
+          AI Engine: Gemini Flash &amp; Imagen Online
         </span>
 
         <span
           className="info-chip"
-          title="Multi-Agent Editorial Room: 4 specialized agents active"
+          title="Multi-Agent Editorial Room: 5 specialized agents active (including DaVinci-5 Art Director)"
         >
           <Bot size={12} color="var(--accent-violet)" />
-          Editorial Room: 4 Multi-Agents Online
+          Editorial Room: 5 Multi-Agents Online
         </span>
       </div>
 

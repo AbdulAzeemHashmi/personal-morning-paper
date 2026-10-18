@@ -64,6 +64,19 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
             By <strong>{edition.leadArticle.author}</strong> • {edition.leadArticle.outlet}
           </div>
 
+          {edition.leadArticle.imageUrl && (
+            <div style={{ margin: '10px 0 14px 0', border: '1px solid #222', padding: '4px', backgroundColor: '#f9f6ee' }}>
+              <img
+                src={edition.leadArticle.imageUrl}
+                alt="Editorial Woodcut"
+                style={{ width: '100%', maxHeight: '180px', objectFit: 'contain', display: 'block' }}
+              />
+              <div style={{ fontSize: '9px', fontStyle: 'italic', color: '#555', textAlign: 'center', marginTop: '4px' }}>
+                FIG. I. — Editorial Broadsheet Engraving • Art Directed by Gemini AI
+              </div>
+            </div>
+          )}
+
           <div style={{ fontSize: '13px', lineHeight: 1.65, textAlign: 'justify' }}>
             <p style={{ marginBottom: '10px' }}>
               <span style={{ float: 'left', fontFamily: "'Cinzel', serif", fontSize: '2.8rem', lineHeight: 0.8, paddingRight: '8px', paddingTop: '2px', fontWeight: 700 }}>

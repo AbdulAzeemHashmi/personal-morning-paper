@@ -5,6 +5,7 @@ export type AgentRole =
   | 'curator_reranker'
   | 'nuance_analyst'
   | 'culture_puzzle'
+  | 'art_director'
   | 'newsroom_anchor';
 
 export interface AgentLog {

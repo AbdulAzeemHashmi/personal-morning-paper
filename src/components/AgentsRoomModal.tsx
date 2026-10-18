@@ -24,6 +24,7 @@ export const AgentsRoomModal: React.FC<AgentsRoomModalProps> = ({
     { name: 'Curator & Reranker (Nexus-4)', role: 'Bayesian Scoring & Layout', color: 'var(--accent-blue)' },
     { name: 'Perspective & Nuance (Vantage-2)', role: '3-Way Worldview Framing', color: 'var(--accent-forest)' },
     { name: 'Culture & Leisure (Minerva-3)', role: 'Riddles, Trivia & Etymology', color: 'var(--accent-gold)' },
+    { name: 'Visual Art Director (DaVinci-5)', role: 'Gemini Image Generation & Woodcuts', color: 'var(--accent-amber)' },
   ];
 
   return (
@@ -43,11 +44,11 @@ export const AgentsRoomModal: React.FC<AgentsRoomModalProps> = ({
 
         <div className="modal-body">
           <p style={{ fontSize: '13px', color: 'var(--ink-secondary)', marginBottom: '16px' }}>
-            Every morning paper is synthesized by a collaborative ensemble of autonomous AI agents. Rather than an unvetted single pass, specialized agents evaluate relevance, challenge editorial bias, draft perspectives, and construct intellectual puzzles.
+            Every morning paper is synthesized by a collaborative ensemble of autonomous AI agents. Rather than an unvetted single pass, specialized agents evaluate relevance, challenge editorial bias, draft perspectives, engrave Victorian broadsheet illustrations via Gemini API, and construct intellectual puzzles.
           </p>
 
           {/* Agent Squad Roster */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '10px', marginBottom: '20px' }}>
             {agentBadges.map((badge, idx) => (
               <div key={idx} style={{ padding: '10px 14px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--rule-light)', borderRadius: 'var(--radius-sm)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '12px', color: badge.color }}>
