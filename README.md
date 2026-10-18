@@ -15,7 +15,7 @@
 
 <br/>
 
-[Live App](https://personal-morning-paper.vercel.app) &nbsp;|&nbsp; [Repository](https://github.com/AbdulAzeemHashmi/personal-morning-paper) &nbsp;|&nbsp; [Architecture](./ARCHITECTURE.md)
+[Live App](https://personal-morning-paper.vercel.app) &nbsp;|&nbsp; [Video Demo](https://www.loom.com/share/6da03cc864d64eb8a10a7a1b804c0ce3) &nbsp;|&nbsp; [Repository](https://github.com/AbdulAzeemHashmi/personal-morning-paper) &nbsp;|&nbsp; [Architecture](./ARCHITECTURE.md)
 
 </div>
 
@@ -24,6 +24,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Video Demo](#video-demo)
 - [Features](#features)
 - [How It Works](#how-it-works)
 - [The Editorial Room](#the-editorial-room)
@@ -44,6 +45,22 @@ The app is built with Next.js and uses a four agent editorial workflow to put ea
 
 <div align="center">
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="420">
+</div>
+
+---
+
+## Video Demo
+
+Watch a quick walkthrough of the app. Click the picture to open the video on Loom.
+
+<div align="center">
+
+<a href="https://www.loom.com/share/6da03cc864d64eb8a10a7a1b804c0ce3">
+<img src="https://cdn.loom.com/sessions/thumbnails/6da03cc864d64eb8a10a7a1b804c0ce3-with-play.gif" alt="Watch the Jimmy Morning Chronicle demo on Loom" width="640"/>
+</a>
+
+[Watch the demo on Loom](https://www.loom.com/share/6da03cc864d64eb8a10a7a1b804c0ce3)
+
 </div>
 
 ---
