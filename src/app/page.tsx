@@ -48,8 +48,7 @@ import { AskPaperDrawer } from '../components/AskPaperDrawer';
 import { SearchBar } from '../components/SearchBar';
 import { LiveWireBar } from '../components/LiveWireBar';
 import { AgentsRoomModal } from '../components/AgentsRoomModal';
-import { GeminiImageStudioModal } from '../components/GeminiImageStudioModal';
-import { Database, Bot, Sparkles, ArrowUp, Palette } from 'lucide-react';
+import { Database, Bot, Sparkles, ArrowUp } from 'lucide-react';
 
 export default function MorningPaperPage() {
   // Initialize with stable server-safe defaults to avoid SSR/client hydration mismatch.
@@ -69,7 +68,6 @@ export default function MorningPaperPage() {
   const [isArchitectureOpen, setIsArchitectureOpen] = useState<boolean>(false);
   const [isAskPaperOpen, setIsAskPaperOpen] = useState<boolean>(false);
   const [isAgentsRoomOpen, setIsAgentsRoomOpen] = useState<boolean>(false);
-  const [isImageStudioOpen, setIsImageStudioOpen] = useState<boolean>(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState<boolean>(false);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
 
@@ -157,20 +155,6 @@ export default function MorningPaperPage() {
     } finally {
       setIsProcessingAgents(false);
     }
-  };
-
-  const handleApplyCoverImage = (newImageUrl: string) => {
-    setEdition(prev => {
-      const updated = {
-        ...prev,
-        leadArticle: {
-          ...prev.leadArticle,
-          imageUrl: newImageUrl
-        }
-      };
-      saveCurrentEdition(updated);
-      return updated;
-    });
   };
 
   const handleThemeChange = (theme: 'broadsheet' | 'midnight' | 'sepia') => {
@@ -284,20 +268,9 @@ export default function MorningPaperPage() {
           Database: {isBackendConnected ? 'Supabase PostgreSQL (Active)' : 'Supabase PostgreSQL'}
         </span>
 
-        <button
-          type="button"
-          className="info-chip"
-          onClick={() => setIsImageStudioOpen(true)}
-          style={{ cursor: 'pointer', border: '1px solid var(--accent-amber)', backgroundColor: 'rgba(217, 119, 6, 0.12)' }}
-          title="Open Google Gemini API Image Generation Studio"
-        >
-          <Palette size={12} color="var(--accent-amber)" />
-          Gemini Image Studio: Click to Engrave
-        </button>
-
         <span
           className="info-chip"
-          title="Multi-Agent Editorial Room: 5 specialized agents active (including DaVinci-5 Art Director)"
+          title="Multi-Agent Editorial Room: 4 specialized agents active"
         >
           <Bot size={12} color="var(--accent-violet)" />
           Editorial Room: 5 Multi-Agents Online
@@ -317,7 +290,6 @@ export default function MorningPaperPage() {
           onOpenSettings={() => setIsOnboardingOpen(true)}
           onOpenAskPaper={() => setIsAskPaperOpen(true)}
           onOpenAgentsRoom={() => setIsAgentsRoomOpen(true)}
-          onOpenImageStudio={() => setIsImageStudioOpen(true)}
           onDownloadPDF={handleDownloadPDF}
           isDownloadingPDF={isDownloadingPDF}
           onThemeChange={handleThemeChange}
@@ -351,7 +323,6 @@ export default function MorningPaperPage() {
                 onSkip={handleSkip}
                 onLike={handleLike}
                 onBookmark={handleBookmark}
-                onOpenImageStudio={() => setIsImageStudioOpen(true)}
               />
 
               <SideArticles
@@ -541,13 +512,6 @@ export default function MorningPaperPage() {
         isProcessing={isProcessingAgents}
       />
 
-      <GeminiImageStudioModal
-        isOpen={isImageStudioOpen}
-        onClose={() => setIsImageStudioOpen(false)}
-        onApplyToCover={handleApplyCoverImage}
-        currentArticleTitle={edition.leadArticle?.title}
-        currentArticleCategory={edition.leadArticle?.category}
-      />
     </div>
   );
 }

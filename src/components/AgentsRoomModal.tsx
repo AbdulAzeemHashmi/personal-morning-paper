@@ -24,7 +24,6 @@ export const AgentsRoomModal: React.FC<AgentsRoomModalProps> = ({
     { name: 'Curator & Reranker (Nexus-4)', role: 'Bayesian Scoring & Layout', color: 'var(--accent-blue)' },
     { name: 'Perspective & Nuance (Vantage-2)', role: '3-Way Worldview Framing', color: 'var(--accent-forest)' },
     { name: 'Culture & Leisure (Minerva-3)', role: 'Riddles, Trivia & Etymology', color: 'var(--accent-gold)' },
-    { name: 'Visual Art Director (DaVinci-5)', role: 'Gemini Image Generation & Woodcuts', color: 'var(--accent-amber)' },
   ];
 
   return (
@@ -44,7 +43,7 @@ export const AgentsRoomModal: React.FC<AgentsRoomModalProps> = ({
 
         <div className="modal-body">
           <p style={{ fontSize: '13px', color: 'var(--ink-secondary)', marginBottom: '16px' }}>
-            Every morning paper is synthesized by a collaborative ensemble of autonomous AI agents. Rather than an unvetted single pass, specialized agents evaluate relevance, challenge editorial bias, draft perspectives, engrave Victorian broadsheet illustrations via Gemini API, and construct intellectual puzzles.
+            Every morning paper is synthesized by a collaborative ensemble of autonomous AI agents. Rather than an unvetted single pass, specialized agents evaluate relevance, challenge editorial bias, draft perspectives, and construct intellectual puzzles.
           </p>
 
           {/* Agent Squad Roster */}

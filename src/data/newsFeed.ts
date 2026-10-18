@@ -1,5 +1,4 @@
 import { Article, CoffeeBreakItem, ChiefEditorNote } from '../types';
-import { generateBroadsheetWoodcutSvg, svgToDataUrl } from '../lib/broadsheetArt';
 
 export const INITIAL_ARTICLES: Article[] = [
   {
@@ -13,10 +12,6 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Technology & AI',
     tags: ['Agentic AI', 'LLMs', 'Future of Work', 'Automation', 'Autonomous Systems'],
     readingMinutes: 4,
-    imageUrl: svgToDataUrl(generateBroadsheetWoodcutSvg({
-      title: 'Autonomous Agents & Industrial Intelligence',
-      category: 'Technology & AI'
-    })),
     leadParagraph: 'A profound structural transformation is quietly taking hold across modern software laboratories and cognitive industries. Autonomous multi-agent swarms - once confined to experimental whitepapers - are now actively orchestrating complex scientific pipelines, refactoring enterprise architectures, and authoring rigorous empirical literature without direct human micro-management.',
     fullBody: [
       'The turning point arrived not with larger parameter counts, but with adaptive feedback topology. By combining persistent state graphs, deterministic tool verification, and asynchronous self-correction loops, contemporary autonomous agents bypass the hallucinations that plagued earlier conversational generative systems.',
@@ -46,10 +41,6 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Markets & Finance',
     tags: ['Central Banks', 'Macroeconomics', 'Renewable Energy', 'Deflation', 'Markets'],
     readingMinutes: 3,
-    imageUrl: svgToDataUrl(generateBroadsheetWoodcutSvg({
-      title: 'Central Banks & Renewable Energy Deflation',
-      category: 'Markets & Finance'
-    })),
     leadParagraph: 'Global central banks are facing an unexpected conceptual challenge: the arrival of sustained, structural disinflation born not from economic recession, but from the exponential scaling of decentralized renewable power grids and advanced battery storage.',
     fullBody: [
       'For decades, standard monetary dogma assumed energy was an erratic inflationary shock variable. Today, however, industrial manufacturing hubs across Europe and Asia are recording historic drops in daytime wholesale electricity prices.',
@@ -77,10 +68,6 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Culture & Ideas',
     tags: ['Neuroscience', 'Focus', 'Digital Minimalism', 'Mindfulness', 'Deep Work'],
     readingMinutes: 3,
-    imageUrl: svgToDataUrl(generateBroadsheetWoodcutSvg({
-      title: 'Neurological Architecture of Deep Focus',
-      category: 'Culture & Ideas'
-    })),
     leadParagraph: 'In an attention economy engineered to reward twitch reflexes and continuous partial awareness, sustained cognitive immersion has ceased to be merely an intellectual habit - it has become the rarest biological luxury of modern civilization.',
     fullBody: [
       'Recent functional neuroimaging investigations reveal that rapid context switching across endless short-form feeds induces chronic micro-spikes of cortisol while down-regulating deep prefrontal dendritic connectivity.',
@@ -100,10 +87,6 @@ export const INITIAL_ARTICLES: Article[] = [
     category: 'Science & Cosmos',
     tags: ['Astrophysics', 'James Webb', 'Exoplanets', 'Space Exploration', 'Origin of Life'],
     readingMinutes: 4,
-    imageUrl: svgToDataUrl(generateBroadsheetWoodcutSvg({
-      title: 'Atmospheric Biosignatures on Exoplanet K2-18b',
-      category: 'Science & Cosmos'
-    })),
     leadParagraph: 'Astronomers peering into the atmospheric envelope of sub-Neptune exoplanet K2-18b, situated 120 light-years away in the constellation Leo, have verified persistent spectroscopic signals indicative of volatile sulfur-bearing photochemistry.',
     fullBody: [
       'The detected transmission spectra reveal unambiguous absorption bands corresponding to methane and carbon dioxide, alongside secondary signatures that terrestrial atmospheric models attribute predominantly to marine microbial metabolism.',

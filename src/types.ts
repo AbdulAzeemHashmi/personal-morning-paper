@@ -55,6 +55,7 @@ export interface Article {
   leadParagraph: string;
   fullBody: string[];
   pullQuote?: string;
+  /** Legacy persisted editions may contain this field; the UI does not render it. */
   imageUrl?: string;
   relevanceScore?: number;
   isLeadStory?: boolean;

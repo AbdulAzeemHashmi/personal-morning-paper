@@ -145,7 +145,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </div>
           </div>
 
-          {article.imageUrl && (
+          {false && (
             <div style={{ marginBottom: '20px', padding: '8px', backgroundColor: 'var(--bg-surface-elevated)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)' }}>
               <img
                 src={article.imageUrl}

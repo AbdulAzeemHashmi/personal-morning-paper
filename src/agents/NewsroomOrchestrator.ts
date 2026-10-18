@@ -4,7 +4,6 @@ import { CuratorAgent } from './CuratorAgent';
 import { ChiefEditorAgent } from './ChiefEditorAgent';
 import { NuanceAgent } from './NuanceAgent';
 import { PuzzleAgent } from './PuzzleAgent';
-import { ArtDirectorAgent } from './ArtDirectorAgent';
 import { INITIAL_ARTICLES } from '../data/newsFeed';
 
 export class NewsroomOrchestrator {
@@ -31,19 +30,15 @@ export class NewsroomOrchestrator {
       logs
     );
 
-    // 2. Parallel Agent Execution (including Gemini Image Art Director)
-    const [chiefEditorNote, nuancePerspective, coffeeBreak, artResult] = await Promise.all([
+    // 2. Parallel Agent Execution
+    const [chiefEditorNote, nuancePerspective, coffeeBreak] = await Promise.all([
       ChiefEditorAgent.execute(profile, leadArticle, sideArticles, logs),
       NuanceAgent.execute(leadArticle, logs),
-      PuzzleAgent.execute(leadArticle.category, logs),
-      ArtDirectorAgent.execute(leadArticle, profile, logs)
+      PuzzleAgent.execute(leadArticle.category, logs)
     ]);
 
-    // Attach nuance perspective and generated artwork to lead article
+    // Attach nuance perspective to lead article
     leadArticle.nuancePerspective = nuancePerspective;
-    if (artResult?.imageUrl) {
-      leadArticle.imageUrl = artResult.imageUrl;
-    }
 
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + dateOffsetDays);

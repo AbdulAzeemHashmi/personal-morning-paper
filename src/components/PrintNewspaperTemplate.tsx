@@ -64,7 +64,7 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
             By <strong>{edition.leadArticle.author}</strong> • {edition.leadArticle.outlet}
           </div>
 
-          {edition.leadArticle.imageUrl && (
+          {false && (
             <div style={{ margin: '10px 0 14px 0', border: '1px solid #222', padding: '4px', backgroundColor: '#f9f6ee' }}>
               <img
                 src={edition.leadArticle.imageUrl}
