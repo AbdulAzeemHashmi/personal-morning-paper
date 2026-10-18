@@ -43,7 +43,7 @@ export class ArtDirectorAgent {
       return {
         imageUrl: '',
         prompt: visualMetaphor,
-        caption: `Fig. 1. — ${leadStory.title}`,
+        caption: `Fig. 1: ${leadStory.title}`,
         model: 'broadsheet-fallback',
         provider: 'curated-woodcut'
       };

@@ -72,7 +72,7 @@ export const PrintNewspaperTemplate: React.FC<PrintNewspaperTemplateProps> = ({ 
                 style={{ width: '100%', maxHeight: '180px', objectFit: 'contain', display: 'block' }}
               />
               <div style={{ fontSize: '9px', fontStyle: 'italic', color: '#555', textAlign: 'center', marginTop: '4px' }}>
-                FIG. I. — Editorial Broadsheet Engraving • Art Directed by Gemini AI
+                FIG. 1: Editorial Broadsheet Engraving • Art Directed by Gemini AI
               </div>
             </div>
           )}

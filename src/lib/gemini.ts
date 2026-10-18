@@ -112,7 +112,7 @@ export async function generateImageWithGemini(
 ): Promise<GeminiImageResult> {
   const articleTitle = options.articleTitle || 'Lead Story';
   const category = options.category || 'General';
-  const caption = `Fig. 1. — ${articleTitle} (Editorial Illustration)`;
+  const caption = `Fig. 1: ${articleTitle} (Editorial Illustration)`;
 
   // Full Victorian broadsheet prompt tuning
   const broadsheetPrompt = `An authentic 19th-century Victorian newspaper broadsheet woodcut engraving editorial illustration. Detailed black ink cross-hatching, fine line etching on aged newsprint, decorative editorial border frame. Allegorical depiction of: ${prompt}. Monochrome aesthetic, highly detailed line art, traditional newspaper engraving style.`;

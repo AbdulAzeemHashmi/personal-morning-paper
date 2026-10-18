@@ -168,7 +168,7 @@ export function generateBroadsheetWoodcutSvg(config: WoodcutConfig): string {
   <line x1="104" y1="336" x2="696" y2="336" stroke="#78350f" stroke-width="0.8" />
 
   <text x="400" y="352" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#1c1917" font-family="'Cinzel', Georgia, serif" letter-spacing="1">
-    FIG. I. — ${escapedTitle.toUpperCase()}
+    FIG. 1: ${escapedTitle.toUpperCase()}
   </text>
   <text x="400" y="371" text-anchor="middle" font-size="10.5" font-style="italic" fill="#57534e">
     ${motifCaption} • Art Directed by Gemini AI
