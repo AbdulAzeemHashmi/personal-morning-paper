@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Article } from '../types';
-import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Sparkles, Clock, RefreshCw } from 'lucide-react';
+import { ExternalLink, BookOpen, ThumbsUp, XCircle, Bookmark, Sparkles, Clock, RefreshCw, Palette } from 'lucide-react';
 
 interface LeadArticleProps {
   article: Article;
@@ -8,6 +8,7 @@ interface LeadArticleProps {
   onSkip: (article: Article) => void;
   onLike: (article: Article) => void;
   onBookmark: (article: Article) => void;
+  onOpenImageStudio?: () => void;
 }
 
 export const LeadArticle: React.FC<LeadArticleProps> = ({
@@ -15,7 +16,8 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
   onReadFull,
   onSkip,
   onLike,
-  onBookmark
+  onBookmark,
+  onOpenImageStudio
 }) => {
   const [imageUrl, setImageUrl] = useState<string | undefined>(article.imageUrl);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -141,17 +143,30 @@ export const LeadArticle: React.FC<LeadArticleProps> = ({
               <span>
                 <strong>FIG. 1:</strong> Editorial Woodcut • Generated via Google Gemini API
               </span>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline"
-                onClick={handleRegenerateArt}
-                disabled={isGenerating}
-                style={{ padding: '3px 8px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                title="Regenerate bespoke illustration using Gemini API"
-              >
-                <RefreshCw size={11} className={isGenerating ? 'audio-pulse' : ''} />
-                {isGenerating ? 'Engraving...' : 'Regenerate Art (Gemini)'}
-              </button>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {onOpenImageStudio && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline"
+                    onClick={onOpenImageStudio}
+                    style={{ padding: '3px 8px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                    title="Open Gemini API Image Generation Studio"
+                  >
+                    <Palette size={11} color="var(--accent-amber)" /> Image Studio
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  onClick={handleRegenerateArt}
+                  disabled={isGenerating}
+                  style={{ padding: '3px 8px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  title="Regenerate bespoke illustration using Gemini API"
+                >
+                  <RefreshCw size={11} className={isGenerating ? 'audio-pulse' : ''} />
+                  {isGenerating ? 'Engraving...' : 'Regenerate Art (Gemini)'}
+                </button>
+              </div>
             </div>
           </div>
         ) : (
